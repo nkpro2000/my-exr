@@ -1,2 +1,24 @@
 # my-exr
-MY linux EXtension Root. `git clone https://github.com/nkpro2000/my-exr.git /mnt/Extended/LXR`.
+
+### Tux
+* Flatpak
+* Distorbox
+
+### Wine
+* WineHQ
+  * Winetricks
+* Bottles
+
+### Darling
+* DarlingHQ
+
+### Droid
+* Waydroid
+* Anbox
+* ARC Welder
+
+### Boxes
+* QEMU
+* Podman (, Buildah, and Skopeo)
+* Kubernetes
+* Docker
