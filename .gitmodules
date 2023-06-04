@@ -1,0 +1,5 @@
+[submodule "my-dir"]
+	path = .sub/my-dir
+	url = https://github.com/nkpro2000/my-dir.git
+	branch = master
+	shallow = true
