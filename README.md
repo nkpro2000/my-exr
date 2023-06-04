@@ -2,7 +2,7 @@
 
 ### Tux
 * Flatpak
-* Distorbox
+* Distrobox
 
 ### Wine
 * WineHQ
@@ -22,3 +22,6 @@
 * Podman (, Buildah, and Skopeo)
 * Kubernetes
 * Docker
+
+
+> Move https://github.com/nkpro2000/my-WineDarlingDroid to here.
