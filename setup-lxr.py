@@ -11,8 +11,11 @@ import shutil
 LINEXROOT = '/mnt/LinEx/Root/'
 LINEXROOT_GIT = '/var/lxr/'+ os.environ['USER'] +'/LinExRoot_git/'
 LINEXROOT_OUT = '/var/lxr/'+ os.environ['USER'] +'/LinExRoot_out/'
+LINEXROOT_TMP = '/var/lxr/tmp/'+ os.environ['USER'] +'/'
 
 LINEXROOT_GIT = '/home/nkpro/nk/Lobby/my-exr/'
+
+os.makedirs(LINEXROOT_TMP, exist_ok=True)
 
 import types
 snk = types.ModuleType(
@@ -30,7 +33,7 @@ exec (
     code,
     {
         **globals(),
-        'NK_DIR':LINEXROOT_GIT, # set_folder_icon uses icons from NK_DIR+'.assets/'+icon_path .
+        'NK_DIR':LINEXROOT_TMP, # set_folder_icon uses icons from NK_DIR+'.assets/'+icon_path .
     },
     snk.__dict__
 )
@@ -58,6 +61,8 @@ for dir in enumerate('Tux,Wine,Darling,Droid,Boxes'.split(',')):
         shutil.copyfile(LINEXROOT+f'{dir[0]+1}{dir[1]}/.directory', dir_path+'.directory')
         # To avoid overwriting other contents in .directory file.
     snk.set_folder_icon(dir_path+'.directory', f'{dir[0]+1}_{dir[1]}.png')
+## Copy assets to LINEXROOT_TMP
+shutil.copytree(LINEXROOT_GIT+'.assets/', LINEXROOT_TMP+'.assets/', dirs_exist_ok=True)
 
 
 # Creating/Updating tree in LINEXROOT
@@ -101,3 +106,5 @@ done
 '''
 with open(LINEXROOT_OUT+'update-lxr.sh', 'w') as f:
     f.write(script)
+os.system('sudo bash '+ LINEXROOT_OUT+'update-lxr.sh')
+os.system('sudo -K')

@@ -4,6 +4,8 @@
 ```bash
 sudo mkdir -m u=rwx,g=,o= -p /var/lxr/$USER
 sudo chown nkpro:nkpro /var/lxr/$USER
+sudo mkdir -m 777 -p /var/lxr/tmp
+sudo chmod +t /var/lxr/tmp
 
 git clone https://github.com/nkpro2000/my-exr.git /var/lxr/$USER/LinExRoot_git
 git -C /var/lxr/$USER/LinExRoot_git submodule init
