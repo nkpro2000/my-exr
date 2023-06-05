@@ -36,16 +36,20 @@ exec (
 )
 
 
-# Setting folder icon for dirs
+# Cleaning LinExRoot_out
+shutil.rmtree(LINEXROOT_OUT, ignore_errors=True)
+os.makedirs(LINEXROOT_OUT, exist_ok=True)
+
+# Making Dirs and adding icons
 ###############################
 ##├── 1Tux
 ##├── 2Wine
 ##├── 3Darling
 ##├── 4Droid
 ##└── 5Boxes
-shutil.rmtree(LINEXROOT_OUT, ignore_errors=True)
-os.makedirs(LINEXROOT_OUT, exist_ok=True)
-
+if os.path.isfile(LINEXROOT+'.directory'):
+    shutil.copyfile(LINEXROOT+'.directory', LINEXROOT_OUT+'.directory')
+snk.set_folder_icon(LINEXROOT_OUT+'.directory', '0_ExtensionRoot.png')
 for dir in enumerate('Tux,Wine,Darling,Droid,Boxes'.split(',')):
     os.mkdir(dir_path:=LINEXROOT_OUT+f'{dir[0]+1}{dir[1]}/')
     if os.path.isfile(LINEXROOT+f'{dir[0]+1}{dir[1]}/.directory'):
