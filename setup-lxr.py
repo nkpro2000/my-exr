@@ -40,6 +40,7 @@ exec (
 shutil.rmtree(LINEXROOT_OUT, ignore_errors=True)
 os.makedirs(LINEXROOT_OUT, exist_ok=True)
 
+
 # Making Dirs and adding icons
 ###############################
 ##├── 1Tux
@@ -47,6 +48,7 @@ os.makedirs(LINEXROOT_OUT, exist_ok=True)
 ##├── 3Darling
 ##├── 4Droid
 ##└── 5Boxes
+snk.set_folder_icon(LINEXROOT_GIT+'.directory', '0_ExtensionRoot_git.png')
 if os.path.isfile(LINEXROOT+'.directory'):
     shutil.copyfile(LINEXROOT+'.directory', LINEXROOT_OUT+'.directory')
 snk.set_folder_icon(LINEXROOT_OUT+'.directory', '0_ExtensionRoot.png')
