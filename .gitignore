@@ -1,0 +1,66 @@
+# Specifies intentionally untracked files to ignore.
+# Each line specifies a pattern, for Git to ignore paths.
+# Files already tracked by Git are not affected.
+# https://git-scm.com/docs/gitignore
+
+
+# Some other assets
+# /.assets/.others/ # Moved to ~/nk/.assets/.others/
+
+### My Coding Environment ###
+# DOLPHIN Directory metadata
+.directory
+# VS_CODE PYTHON Unit test / coverage reports
+.pytest_cache/
+# VScode workspace dir
+.vscode/
+# PYTHON Byte-compiled / optimized / DLL files
+__pycache__/
+
+### Some personal dirs ###
+
+### Temporary ###
+
+
+## Testing repo
+# ~/nk >>> git ls-files | column                                      ±[●][master]
+# .assets/0_ExtensionRoot.png             .assets/4_Droid.png
+# .assets/0_ExtensionRoot_git.png         .assets/5_Boxes.png
+# .assets/1_Tux.png                       .gitignore
+# .assets/2_Wine.png                      .gitmodules
+# .assets/2_Winee.png                     .sub/my-dir
+# .assets/3_Darling.png                   README.md
+# .assets/3_Darlingg.png                  setup-lxr.py
+
+## Testing .gitignore
+# ~/nk >>> find . -path './.git' -prune -o -type d -printf '%p/\n' -o -print | sort | while if [ -z "$i" ]; then IFS= read -r i; fi; do
+# if git check-ignore -v "$i" 1>/dev/null; then tput setaf 1; echo X "$i"; else tput setaf 10; echo O "$i"; fi
+# if [[ $i =~ '/'$ ]]; then i="$i"'if_have_some_file'; else i=''; fi
+# done
+# O ./
+# O ./if_have_some_file
+# O ./.assets/
+# O ./.assets/if_have_some_file
+# O ./.assets/0_ExtensionRoot_git.png
+# O ./.assets/0_ExtensionRoot.png
+# O ./.assets/1_Tux.png
+# O ./.assets/2_Winee.png
+# O ./.assets/2_Wine.png
+# O ./.assets/3_Darlingg.png
+# O ./.assets/3_Darling.png
+# O ./.assets/4_Droid.png
+# O ./.assets/5_Boxes.png
+# X ./.directory
+# O ./.gitignore
+# O ./.gitmodules
+# X ./.pytest_cache/
+# X ./.pytest_cache/if_have_some_file
+# O ./README.md
+# O ./setup-lxr.py
+# O ./.sub/
+# O ./.sub/if_have_some_file
+# O ./.sub/my-dir/
+# fatal: Pathspec './.sub/my-dir/if_have_some_file' is in submodule '.sub/my-dir'
+# O ./.sub/my-dir/if_have_some_file
+# fatal: Pathspec './.sub/my-dir/.53c2375/' is in submodule '.sub/my-dir'
+# ~/nk >>> 
