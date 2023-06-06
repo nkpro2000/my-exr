@@ -73,6 +73,7 @@ cd '''+ LINEXROOT_OUT + r''' || (echo 'no LinExRoot_out' && exit)
 LXR='''+ LINEXROOT + r'''
 THIS_USER='''+ os.environ['USER'] +r'''
 
+mkdir -p $LXR
 for file in $(find ./ -type d | cut -d. -f2-); do
     # shellcheck disable=SC2174
     mkdir -m "$(stat -c '%a' .$file)" -p ${LXR}$file

@@ -11,6 +11,7 @@ git clone https://github.com/nkpro2000/my-exr.git /var/lxr/$USER/LinExRoot_git
 git -C /var/lxr/$USER/LinExRoot_git submodule init
 git -C /var/lxr/$USER/LinExRoot_git submodule update
 
+# Mount /mnt/LinEx/Root/
 python /var/lxr/$USER/LinExRoot_git/setup-lxr.py
 sudo bash /var/lxr/$USER/LinExRoot_out/update-lxr.sh
 
