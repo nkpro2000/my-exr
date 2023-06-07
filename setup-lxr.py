@@ -73,35 +73,35 @@ cd '''+ LINEXROOT_OUT + r''' || (echo 'no LinExRoot_out' && exit)
 LXR='''+ LINEXROOT + r'''
 THIS_USER='''+ os.environ['USER'] +r'''
 
-mkdir -p $LXR
+mkdir -p "$LXR"
 for file in $(find ./ -type d | cut -d. -f2-); do
     # shellcheck disable=SC2174
-    mkdir -m "$(stat -c '%a' .$file)" -p ${LXR}$file
-    file_user=$(stat -c '%U' .$file)
-    file_group=$(stat -c '%G' .$file)
-    if test $file_user = $THIS_USER; then
+    mkdir -m "$(stat -c '%a' ".$file")" -p "${LXR}$file"
+    file_user=$(stat -c '%U' ".$file")
+    file_group=$(stat -c '%G' ".$file")
+    if test "$file_user" = "$THIS_USER"; then
         file_user=root
     fi
-    if test $file_group = $THIS_USER; then
+    if test "$file_group" = "$THIS_USER"; then
         file_group=root
     fi
-    chown ${file_user}:${file_group} ${LXR}$file
+    chown "${file_user}:${file_group}" "${LXR}$file"
 done
 for file in $(find ./ -type f | cut -d. -f2-); do
     if test ".$file" = './update-lxr.sh'; then
         continue
     fi
-    cat .$file > ${LXR}$file
-    chmod "$(stat -c '%a' .$file)" ${LXR}$file
-    file_user=$(stat -c '%U' .$file)
-    file_group=$(stat -c '%G' .$file)
-    if test $file_user = $THIS_USER; then
+    cat ".$file" > "${LXR}$file"
+    chmod "$(stat -c '%a' ".$file")" "${LXR}$file"
+    file_user=$(stat -c '%U' ".$file")
+    file_group=$(stat -c '%G' ".$file")
+    if test "$file_user" = "$THIS_USER"; then
         file_user=root
     fi
-    if test $file_group = $THIS_USER; then
+    if test "$file_group" = "$THIS_USER"; then
         file_group=root
     fi
-    chown ${file_user}:${file_group} ${LXR}$file
+    chown "${file_user}:${file_group}" "${LXR}$file"
 done
 
 '''
