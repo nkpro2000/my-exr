@@ -57,6 +57,7 @@ if os.path.isfile(LINEXROOT+'.directory'):
 snk.set_folder_icon(LINEXROOT_OUT+'.directory', '0_ExtensionRoot.png')
 for dir in enumerate('Tux,Wine,Darling,Droid,Boxes'.split(',')):
     os.mkdir(dir_path:=LINEXROOT_OUT+f'{dir[0]+1}{dir[1]}/')
+    os.mkdir(dir_path+'flatpak')
     if os.path.isfile(LINEXROOT+f'{dir[0]+1}{dir[1]}/.directory'):
         shutil.copyfile(LINEXROOT+f'{dir[0]+1}{dir[1]}/.directory', dir_path+'.directory')
         # To avoid overwriting other contents in .directory file.
@@ -103,6 +104,19 @@ for file in $(find ./ -type f | cut -d. -f2-); do
     fi
     chown "${file_user}:${file_group}" "${LXR}$file"
 done
+
+# shellcheck disable=SC2174
+mkdir -m u=rwx,g=,o= -p "${LXR}2Wine/${THIS_USER}/"
+chown "${THIS_USER}:${THIS_USER}" "${LXR}2Wine/${THIS_USER}/"
+# shellcheck disable=SC2174
+mkdir -m u=rwx,g=,o= -p "${LXR}3Darling/${THIS_USER}/"
+chown "${THIS_USER}:${THIS_USER}" "${LXR}3Darling/${THIS_USER}/"
+# shellcheck disable=SC2174
+mkdir -m u=rwx,g=,o= -p "${LXR}4Droid/${THIS_USER}/"
+chown "${THIS_USER}:${THIS_USER}" "${LXR}4Droid/${THIS_USER}/"
+
+mkdir -p /etc/flatpak/installations.d/
+cp '''+ LINEXROOT_GIT +r'''LXR-*.conf /etc/flatpak/installations.d/
 
 '''
 with open(LINEXROOT_OUT+'update-lxr.sh', 'w') as f:
