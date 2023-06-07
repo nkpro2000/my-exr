@@ -112,7 +112,9 @@ done
 mkdir -p /etc/flatpak/installations.d/
 cp '''+ LINEXROOT_GIT +r'''LXR-*.conf /etc/flatpak/installations.d/
 
-'''
+cp '''+ LINEXROOT_GIT +r'''zf_nk-flatpak.sh /etc/profile.d/
+
+''' #Look4Doc#
 with open(LINEXROOT_OUT+'update-lxr.sh', 'w') as f:
     f.write(script)
 os.system('sudo bash '+ LINEXROOT_OUT+'update-lxr.sh')
