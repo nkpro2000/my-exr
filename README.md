@@ -13,7 +13,6 @@ git -C /var/lxr/$USER/LinExRoot_git submodule update
 
 # Mount /mnt/LinEx/Root/
 python /var/lxr/$USER/LinExRoot_git/setup-lxr.py
-sudo bash /var/lxr/$USER/LinExRoot_out/update-lxr.sh
 
 sudo -K
 ```
