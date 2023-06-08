@@ -110,9 +110,9 @@ for file in $(find ./ -type f | cut -d. -f2-); do
 done
 
 mkdir -p /etc/flatpak/installations.d/
-cp '''+ LINEXROOT_GIT +r'''LXR-*.conf /etc/flatpak/installations.d/
+cp '''+ LINEXROOT_GIT +r'''flatpak/LXR-*.conf /etc/flatpak/installations.d/
 
-cp '''+ LINEXROOT_GIT +r'''zf_nk-flatpak.sh /etc/profile.d/
+cp '''+ LINEXROOT_GIT +r'''flatpak/zf_nk-flatpak.sh /etc/profile.d/
 
 ''' #Look4Doc#
 with open(LINEXROOT_OUT+'update-lxr.sh', 'w') as f:
