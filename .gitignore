@@ -6,6 +6,8 @@
 
 # Some other assets
 # /.assets/.others/ # Moved to ~/nk/.assets/.others/
+# Backups (not needed for repo)
+/data/backup/
 
 ### My Coding Environment ###
 # DOLPHIN Directory metadata
