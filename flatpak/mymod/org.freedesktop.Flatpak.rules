@@ -1,0 +1,50 @@
+/* /etc/polkit-1/rules.d/org.freedesktop.Flatpak.rules
+
+polkitd reads .rules files from the /etc/polkit-1/rules.d and /usr/share/polkit-1/rules.d
+directories by sorting the files in lexical order based on the basename on each file
+(if there's a tie, files in /etc are processed before files in /usr).
+
+For example, for the following four files, the order is
+    * /etc/polkit-1/rules.d/10-auth.rules
+    * /usr/share/polkit-1/rules.d/10-auth.rules
+    * /etc/polkit-1/rules.d/15-auth.rules
+    * /usr/share/polkit-1/rules.d/20-auth.rules
+
+So, this function will be called before /usr/share/polkit-1/rules.d/org.freedesktop.Flatpak.rules .
+So that, we can return YES/NO if installation is lxr(_[a-z_]*)? else NOT_HANDLED(so original function) .
+*/
+polkit.addRule(function(action, subject) {
+    /* Only for Flatpak actions with mymod flatpak-system-helper */
+    if (action.id.startsWith("org.freedesktop.Flatpak.") &&
+        action.lookup("parameters")) {
+            parameters = action.lookup("parameters");
+            /* "(b'/mnt/LinEx/Root/1Tux/flatpak/repo/tmp/flatpak-cache-ZOZC61/repo-gubBwS', 96,
+                    'app/com.github.tchx84.Flatseal/x86_64/stable', 'flathub', [], [], 'lxr')" */
+            parameters = eval('['+parameters.replace(/^\(|\)$/g,'').replace(/b'/g,"'")+']');
+            /* parameters have installation, and if matched it must be installation lxr* */
+            /* Only for lxr* installations of Flatpak */
+            if (parameters.some((e) => e.toString().match(/^lxr(:?_[a-z_]*)?$/))) {
+                if (subject.isInGroup("lxr")) {
+                    if (action.id == "org.freedesktop.Flatpak.app-install" ||
+                        action.id == "org.freedesktop.Flatpak.runtime-install"||
+                        action.id == "org.freedesktop.Flatpak.app-uninstall" ||
+                        action.id == "org.freedesktop.Flatpak.runtime-uninstall" ||
+                        action.id == "org.freedesktop.Flatpak.modify-repo") {
+                            if (subject.active == true && subject.local == true) {
+                                return polkit.Result.YES;
+                            } else {
+                                //return polkit.Result.AUTH_ADMIN_KEEP;
+                                return polkit.Result.AUTH_SELF_KEEP
+                            }
+                    } else {
+                        /* Other actions need admin access for safety */
+                        return polkit.Result.AUTH_ADMIN;
+                    }
+                } else {
+                    /* Don't allow user not in 'lxr' group to do anything in lxr* installations */
+                    return polkit.Result.NO;
+                }
+            }
+    }
+    return polkit.Result.NOT_HANDLED;
+});

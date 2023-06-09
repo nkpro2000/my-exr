@@ -1,1 +1,49 @@
-#YET2DO
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: nkpro2000sr <srnaveen2k@yahoo.com>
+Date: Fri, 9 Jun 2023 18:03:15 +0530
+Subject: [PATCH] MyMod of Flatpak system-helper polkit_details_insert
+ installation
+
+This patch is used to modify flatpak-system-helper so that it pass all the
+parameters to polkit so we can handle the action request more precisely.
+This file is generated using `git format-patch --zero-commit -1 HEAD`.
+---
+ system-helper/flatpak-system-helper.c | 23 +++++++++++++++++++++++
+ 1 file changed, 23 insertions(+)
+
+diff --git a/system-helper/flatpak-system-helper.c b/system-helper/flatpak-system-helper.c
+index 13a7b3b2..967880d5 100644
+--- a/system-helper/flatpak-system-helper.c
++++ b/system-helper/flatpak-system-helper.c
+@@ -2160,6 +2160,29 @@ flatpak_authorize_method_handler (GDBusInterfaceSkeleton *interface,
+       no_interaction = (flags & (1 << 0)) != 0;
+     }
+ 
++  /* I think we can send details to polkit for all above method_name s */
++  if (g_strcmp0 (method_name, "Deploy") == 0 ||
++      g_strcmp0 (method_name, "DeployAppstream") == 0 ||
++      g_strcmp0 (method_name, "InstallBundle") == 0 ||
++      g_strcmp0 (method_name, "Uninstall") == 0 ||
++      g_strcmp0 (method_name, "ConfigureRemote") == 0 ||
++      g_strcmp0 (method_name, "Configure") == 0 ||
++      g_strcmp0 (method_name, "UpdateRemote") == 0 ||
++      g_strcmp0 (method_name, "RemoveLocalRef") == 0 ||
++      g_strcmp0 (method_name, "PruneLocalRepo") == 0 ||
++      g_strcmp0 (method_name, "EnsureRepo") == 0 ||
++      g_strcmp0 (method_name, "RunTriggers") == 0 ||
++      g_strcmp0 (method_name, "GetRevokefsFd") == 0 ||
++      g_strcmp0 (method_name, "CancelPull") == 0 ||
++      g_strcmp0 (method_name, "UpdateSummary") == 0 ||
++      g_strcmp0 (method_name, "GenerateOciSummary") == 0)
++    {
++      /* g_variant_print can represent GVariant as String (source ChatGPT)*/
++      const char *gvariant_string = g_variant_print(parameters, FALSE);
++      /* gvariant_string sample : (i{s(ii)}){42,"nested",{10,20}} (source ChatGPT)*/
++      polkit_details_insert (details, "parameters", gvariant_string);
++    }
++
+   if (action)
+     {
+       g_autoptr(AutoPolkitAuthorizationResult) result = NULL;
+-- 
+2.40.0
