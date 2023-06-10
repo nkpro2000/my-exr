@@ -13,8 +13,6 @@ LINEXROOT_GIT = '/var/lxr/'+ os.environ['USER'] +'/LinExRoot_git/'
 LINEXROOT_OUT = '/var/lxr/'+ os.environ['USER'] +'/LinExRoot_out/'
 LINEXROOT_TMP = '/var/lxr/tmp/'+ os.environ['USER'] +'/'
 
-LINEXROOT_GIT = '/home/nkpro/nk/Lobby/my-exr/'
-
 os.makedirs(LINEXROOT_TMP, exist_ok=True)
 
 import types
