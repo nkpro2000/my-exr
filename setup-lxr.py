@@ -1,7 +1,7 @@
 #TODO add shebang with proper python env.
 # This is the first file to run after cloning so that all are configured as intended.
 # See comments ######### for steps involved in this process done by this script.
-# Will be run user like `python setup-lxr.py` after cloning this repo in /mnt/LinEx/Root .
+# Will be run by user like `python setup-lxr.py`, after cloning this repo (follow README.md).
 
 import os
 import sys
@@ -117,5 +117,8 @@ cp '''+ LINEXROOT_GIT +r'''flatpak/zf_nk-flatpak.sh /etc/profile.d/
 ''' #Look4Doc#
 with open(LINEXROOT_OUT+'update-lxr.sh', 'w') as f:
     f.write(script)
+print('I> To run bash Script to apply changes to '+LINEXROOT)
+print('I> this will only update specific file/dir, other are left unchanged.')
+print('|> $ sudo bash '+ LINEXROOT_OUT+'update-lxr.sh # Ctrl+D to skip')
 os.system('sudo bash '+ LINEXROOT_OUT+'update-lxr.sh')
 os.system('sudo -K')
