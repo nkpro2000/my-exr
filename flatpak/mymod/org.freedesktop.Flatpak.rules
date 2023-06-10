@@ -23,7 +23,7 @@ polkit.addRule(function(action, subject) {
             parameters = eval('['+parameters.replace(/^\(|\)$/g,'').replace(/b'/g,"'")+']');
             /* parameters have installation, and if matched it must be installation lxr* */
             /* Only for lxr* installations of Flatpak */
-            if (parameters.some((e) => e.toString().match(/^lxr(:?_[a-z_]*)?$/))) {
+            if (parameters.some(function(e){return e.toString().match(/^lxr(:?_[a-z_]*)?$/)})) {
                 if (subject.isInGroup("lxr")) {
                     if (action.id == "org.freedesktop.Flatpak.app-install" ||
                         action.id == "org.freedesktop.Flatpak.runtime-install"||
