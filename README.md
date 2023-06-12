@@ -3,7 +3,7 @@
 **To Setup :**
 ```bash
 sudo mkdir -m u=rwx,g=,o= -p /var/lxr/$USER
-sudo chown nkpro:nkpro /var/lxr/$USER
+sudo chown $USER:$USER /var/lxr/$USER
 sudo mkdir -m 777 -p /var/lxr/tmp
 sudo chmod +t /var/lxr/tmp
 
