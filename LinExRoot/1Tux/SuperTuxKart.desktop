@@ -1,0 +1,58 @@
+[Desktop Entry]
+
+Type=Application
+
+# The version of the desktop entry specification to which this file complies
+Version=1.5
+
+# The name of the application
+Name=SuperTuxKart
+
+GenericName=A 3D open-source kart racing game
+
+# A comment which can/will be used as a tooltip
+Comment=Installed just because, i name LinExRoot/1Tux
+
+NoDisplay=true
+
+# The path to the folder in which the executable is run
+Path=/mnt/LinEx/Root/1Tux/SuperTuxKart/
+
+# The executable of the application, possibly with arguments.
+Exec=env HOME=/mnt/LinEx/Root/1Tux/$USER/ /mnt/LinEx/Root/1Tux/SuperTuxKart/run_game.sh
+
+TryExec=/mnt/LinEx/Root/1Tux/SuperTuxKart/run_game.sh
+
+# The name of the icon that will be used to display this entry
+Icon=/mnt/LinEx/Root/1Tux/SuperTuxKart/data/supertuxkart.icns
+#Icon=supertuxkart
+
+# Describes whether this application needs to be run in a terminal or not
+Terminal=false
+
+StartupNotify=false
+
+# Describes the categories in which this entry should be shown
+Categories=Game;ArcadeGame;
+
+Keywords=tux;game;race;
+
+# To prefer Dedicated GPU
+PrefersNonDefaultGPU=true
+
+# https://wiki.archlinux.org/title/desktop_entries
+# https://specifications.freedesktop.org/desktop-entry-spec/desktop-entry-spec-latest.html
+
+## To download and extract SuperTuxKart
+# 
+# curl -s 'https://api.github.com/repos/supertuxkart/stk-code/releases/latest' \
+# | grep 'browser_download_url.*SuperTuxKart-.*-linux-x86_64.tar.xz' \
+# | cut -d: -f2- | tr -d \" \
+# | wget -i - -O /mnt/LinEx/Root/1Tux/$USER/stuxk.tar.xz
+# 
+# sudo -s -- <<EOC
+# tar -xvf /mnt/LinEx/Root/1Tux/$USER/stuxk.tar.xz -C /mnt/LinEx/Root/1Tux/
+# mv -T /mnt/LinEx/Root/1Tux/SuperTuxKart-* /mnt/LinEx/Root/1Tux/SuperTuxKart
+# chown -hR root:root /mnt/LinEx/Root/1Tux/SuperTuxKart/
+# chmod -R o-w /mnt/LinEx/Root/1Tux/SuperTuxKart/
+# EOC
