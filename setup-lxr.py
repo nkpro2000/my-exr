@@ -62,6 +62,14 @@ for dir in enumerate('Tux,Wine,Darling,Droid,Boxes'.split(',')):
     # for Flatpak
     os.mkdir(dir_path+'flatpak')
     os.mkdir(dir_path+os.environ['USER'], mode=0o700)
+    os.makedirs(dir_path+os.environ['USER']+'/.local/share/flatpak/overrides/', exist_ok=True)
+    with open(dir_path+os.environ['USER']+'/.local/share/flatpak/overrides/com.github.tchx84.Flatseal','w') as f:
+        f.write(
+            '[Context]\nfilesystems=!xdg-data/flatpak/app;!/var/lib/flatpak/app;'+\
+                #'/etc/flatpak/installations.d/:ro;'+\
+                'host-etc;'+ #github.com/flatpak/flatpak/issues/4525 \
+                LINEXROOT+f'{dir[0]+1}{dir[1]}/flatpak/app:ro\n'
+        )
 ## Copy assets to LINEXROOT_TMP
 shutil.copytree(LINEXROOT_GIT+'.assets/', LINEXROOT_TMP+'.assets/', dirs_exist_ok=True)
 
@@ -80,14 +88,14 @@ for file in $(find ./ -type d | cut -d. -f2-); do
     mkdir -m "$(stat -c '%a' ".$file")" -p "${LXR}$file"
     file_user=$(stat -c '%U' ".$file")
     file_group=$(stat -c '%G' ".$file")
-    if test "$(basename ".$file")" != "$THIS_USER"; then #Look4Doc#
+    case ".$file" in *"/$THIS_USER/"*);; *"/$THIS_USER");; *) #Look4Doc#
         if test "$file_user" = "$THIS_USER"; then
             file_user=root
         fi
         if test "$file_group" = "$THIS_USER"; then
             file_group=root
         fi
-    fi
+    esac
     chown "${file_user}:${file_group}" "${LXR}$file"
 done
 for file in $(find ./ -type f | cut -d. -f2-); do
@@ -98,12 +106,14 @@ for file in $(find ./ -type f | cut -d. -f2-); do
     chmod "$(stat -c '%a' ".$file")" "${LXR}$file"
     file_user=$(stat -c '%U' ".$file")
     file_group=$(stat -c '%G' ".$file")
-    if test "$file_user" = "$THIS_USER"; then
-        file_user=root
-    fi
-    if test "$file_group" = "$THIS_USER"; then
-        file_group=root
-    fi
+    case ".$file" in *"/$THIS_USER/"*);; *)
+        if test "$file_user" = "$THIS_USER"; then
+            file_user=root
+        fi
+        if test "$file_group" = "$THIS_USER"; then
+            file_group=root
+        fi
+    esac
     chown "${file_user}:${file_group}" "${LXR}$file"
 done
 
