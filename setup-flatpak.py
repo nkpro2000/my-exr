@@ -88,10 +88,10 @@ THIS_USER='''+ os.environ['USER'] +r'''
 
 pacman -Sy flatpak
 
-mv /usr/lib/systemd/system/flatpak-system-helper.service "$BKUP"
+cp /usr/lib/systemd/system/flatpak-system-helper.service "$BKUP"
 mv /usr/lib/flatpak-system-helper "$BKUP"
 
-cp "$FAKM"flatpak-system-helper.service /usr/lib/systemd/system/
+sed -f "$FAKM"flatpak-system-helper.service.sed -i /usr/lib/systemd/system/flatpak-system-helper.service
 cp ./fak/usr/lib/flatpak-system-helper /usr/lib/flatpak-system-helper_mymod
 
 cp "$FAKM"org.freedesktop.Flatpak.rules /etc/polkit-1/rules.d/
