@@ -89,9 +89,12 @@ THIS_USER='''+ os.environ['USER'] +r'''
 pacman -Sy flatpak
 
 cp /usr/lib/systemd/system/flatpak-system-helper.service "$BKUP"
+cp /usr/share/dbus-1/system-services/org.freedesktop.Flatpak.SystemHelper.service "$BKUP"
 mv /usr/lib/flatpak-system-helper "$BKUP"
 
 sed -f "$FAKM"flatpak-system-helper.service.sed -i /usr/lib/systemd/system/flatpak-system-helper.service
+sed -f "$FAKM"org.freedesktop.Flatpak.SystemHelper.service.sed \
+    -i /usr/share/dbus-1/system-services/org.freedesktop.Flatpak.SystemHelper.service
 cp ./fak/usr/lib/flatpak-system-helper /usr/lib/flatpak-system-helper_mymod
 
 cp "$FAKM"org.freedesktop.Flatpak.rules /etc/polkit-1/rules.d/

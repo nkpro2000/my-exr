@@ -33,8 +33,7 @@ sudo sed \
 > */usr/lib/systemd/system/flatpak-system-helper.service*
 > ```diff
 >  [Unit]
-> -Description=flatpak system helper
-> +Description=flatpak system helper (mymod)
+>  Description=flatpak system helper (mymod)
 >  
 >  [Service]
 > +User=fak
@@ -42,8 +41,7 @@ sudo sed \
 > +
 >  BusName=org.freedesktop.Flatpak.SystemHelper
 >  Environment=XDG_DATA_DIRS=/var/lib/flatpak/exports/share/:/usr/local/share/:/usr/share/
-> -ExecStart=/usr/lib/flatpak-system-helper
-> +ExecStart=/usr/lib/flatpak-system-helper_mymod
+>  ExecStart=/usr/lib/flatpak-system-helper_mymod
 >  Type=dbus
 >  IOSchedulingClass=idle
 > ```
@@ -73,8 +71,7 @@ sudo sed \
 > ```diff
 >  [D-BUS Service]
 >  Name=org.freedesktop.Flatpak.SystemHelper
-> -Exec=/usr/lib/flatpak-system-helper
-> +Exec=/usr/lib/flatpak-system-helper_mymod
+>  Exec=/usr/lib/flatpak-system-helper_mymod
 >  SystemdService=flatpak-system-helper.service
 > -User=root
 > +User=fak
