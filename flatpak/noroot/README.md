@@ -3,6 +3,9 @@
 Only flatpak-system-helper in Flatpak uses privileged access (to install flatpak in
 system-wide locations).
 
+> You can use [this script](https://gist.github.com/nkpro2000/e261a67c90ace66193546def4d80a881) instead of below steps:  
+> `curl -s 'https://gist.githubusercontent.com/nkpro2000/e261a67c90ace66193546def4d80a881/raw/norootflatpak.sh' | sudo bash`
+
 ## Making flatpak-system-helper run as 'fak' not 'root' user
 > there is already 'flatpak' system account user, but i don't know what it is for.
 >> `flatpak:x:972:972:Flatpak system helper:/:/usr/bin/nologin`
@@ -48,6 +51,9 @@ sudo sed \
 
 ### Modifying DBus related files
 ```bash
+cp \
+    /usr/share/dbus-1/system.d/org.freedesktop.Flatpak.SystemHelper.conf \
+    /var/lxr/$USER/LinExRoot_git/data/backup/
 sudo sed \
     -f /var/lxr/$USER/LinExRoot_git/flatpak/noroot/org.freedesktop.Flatpak.SystemHelper.conf.sed \
                      -i /usr/share/dbus-1/system.d/org.freedesktop.Flatpak.SystemHelper.conf
@@ -83,6 +89,9 @@ Adding 'fak' user as action owner, so no more this vVV error.
 >> https://stackoverflow.com/questions/75573959/ask-for-authentication-when-calling-a-dbus-method-on-a-non-root-other-users-da
 
 ```bash
+cp \
+    /usr/share/polkit-1/actions/org.freedesktop.Flatpak.policy \
+    /var/lxr/$USER/LinExRoot_git/data/backup/
 sudo sed \
     -f /var/lxr/$USER/LinExRoot_git/flatpak/noroot/org.freedesktop.Flatpak.policy.sed \
                     -i /usr/share/polkit-1/actions/org.freedesktop.Flatpak.policy
