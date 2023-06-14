@@ -48,17 +48,20 @@ os.makedirs(LINEXROOT_OUT, exist_ok=True)
 ##├── 2Wine
 ##├── 3Darling
 ##├── 4Droid
-##└── 5Boxes
+##├── 5Boxes
+##├── 6Games
+##└── 7Temps
 snk.set_folder_icon(LINEXROOT_GIT+'.directory', '0_ExtensionRoot_git.png')
 if os.path.isfile(LINEXROOT+'.directory'):
     shutil.copyfile(LINEXROOT+'.directory', LINEXROOT_OUT+'.directory')
 snk.set_folder_icon(LINEXROOT_OUT+'.directory', '0_ExtensionRoot.png')
-for dir in enumerate('Tux,Wine,Darling,Droid,Boxes'.split(',')):
+for dir in enumerate('Tux,Wine,Darling,Droid,Boxes,Games,Temps'.split(',')):
     os.mkdir(dir_path:=LINEXROOT_OUT+f'{dir[0]+1}{dir[1]}/')
     if os.path.isfile(LINEXROOT+f'{dir[0]+1}{dir[1]}/.directory'):
         shutil.copyfile(LINEXROOT+f'{dir[0]+1}{dir[1]}/.directory', dir_path+'.directory')
         # To avoid overwriting other contents in .directory file.
-    snk.set_folder_icon(dir_path+'.directory', f'{dir[0]+1}_{dir[1]}.png')
+    if os.path.isfile(LINEXROOT_TMP+'.assets/'+f'{dir[0]+1}_{dir[1]}.png'):
+        snk.set_folder_icon(dir_path+'.directory', f'{dir[0]+1}_{dir[1]}.png')
     # for Flatpak
     os.mkdir(dir_path+'flatpak')
     os.mkdir(dir_path+os.environ['USER'], mode=0o700)
