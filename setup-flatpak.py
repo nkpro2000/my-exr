@@ -13,6 +13,11 @@ LINEXROOT_BACKUP = LINEXROOT_GIT+'data/backup/'
 
 MAKEPKG_CMD = 'makepkg -Lfs'
 
+# Check LinEx is mounted
+if (ec:=os.system("mount | grep '/mnt/LinEx'")) != 0:
+    print('?> LinEx not mounted')
+    sys.exit(ec)
+
 os.makedirs(LINEXROOT_FAKPKG, exist_ok=True)
 os.makedirs(LINEXROOT_BACKUP, exist_ok=True)
 

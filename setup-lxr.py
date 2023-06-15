@@ -13,6 +13,11 @@ LINEXROOT_GIT = '/var/lxr/'+ os.environ['USER'] +'/LinExRoot_git/'
 LINEXROOT_OUT = '/var/lxr/'+ os.environ['USER'] +'/LinExRoot_out/'
 LINEXROOT_TMP = '/var/lxr/tmp/'+ os.environ['USER'] +'/'
 
+# Check LinEx is mounted
+if (ec:=os.system("mount | grep '/mnt/LinEx'")) != 0:
+    print('?> LinEx not mounted'+str(ec))
+    sys.exit(ec)
+
 os.makedirs(LINEXROOT_TMP, exist_ok=True)
 
 import types
@@ -51,6 +56,10 @@ os.makedirs(LINEXROOT_OUT, exist_ok=True)
 ##├── 5Boxes
 ##├── 6Games
 ##└── 7Temps
+shutil.copytree( # Copy assets to LINEXROOT_TMP, before adding icons to dirs.
+    LINEXROOT_GIT+'.assets/', LINEXROOT_TMP+'.assets/',
+    dirs_exist_ok=True
+)
 snk.set_folder_icon(LINEXROOT_GIT+'.directory', '0_ExtensionRoot_git.png')
 if os.path.isfile(LINEXROOT+'.directory'):
     shutil.copyfile(LINEXROOT+'.directory', LINEXROOT_OUT+'.directory')
@@ -73,8 +82,6 @@ for dir in enumerate('Tux,Wine,Darling,Droid,Boxes,Games,Temps'.split(',')):
                 'host-etc;'+ #github.com/flatpak/flatpak/issues/4525 \
                 LINEXROOT+f'{dir[0]+1}{dir[1]}/flatpak/app:ro\n'
         )
-## Copy assets to LINEXROOT_TMP
-shutil.copytree(LINEXROOT_GIT+'.assets/', LINEXROOT_TMP+'.assets/', dirs_exist_ok=True)
 
 
 # Creating/Updating tree in LINEXROOT
