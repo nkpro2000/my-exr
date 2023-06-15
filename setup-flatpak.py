@@ -104,6 +104,11 @@ cp ./fak/usr/lib/flatpak-system-helper /usr/lib/flatpak-system-helper_mymod
 
 cp "$FAKM"org.freedesktop.Flatpak.rules /etc/polkit-1/rules.d/
 
+cp "$FAKM"to_avoid_unmod-flatpak/flatpak-rm-nomod.service /usr/lib/systemd/system/
+cp "$FAKM"to_avoid_unmod-flatpak/flatpak-rm-nomod.path /usr/lib/systemd/system/
+systemctl daemon-reload
+systemctl enable --now flatpak-rm-nomod.path
+
 groupadd lxr
 usermod --append --group lxr "$THIS_USER"
 

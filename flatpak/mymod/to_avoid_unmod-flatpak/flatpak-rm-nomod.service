@@ -1,0 +1,11 @@
+[Unit]
+Description=Force to use modified flatpak-system-helper
+
+[Service]
+ExecStart=/usr/bin/mv /usr/lib/flatpak-system-helper /var/lxr/tmp/
+Type=oneshot
+Restart=on-failure
+
+[Install]
+Also=flatpak-rm-nomod.path
+WantedBy=multi-user.target

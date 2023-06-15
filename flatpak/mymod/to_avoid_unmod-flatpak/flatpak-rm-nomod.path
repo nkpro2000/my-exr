@@ -1,0 +1,11 @@
+[Unit]
+Description=Force to use modified flatpak-system-helper
+PartOf=flatpak-rm-nomod.service
+
+[Path]
+PathExists=/usr/lib/flatpak-system-helper
+
+[Install]
+WantedBy=multi-user.target
+
+# systemctl enable --now flatpak-rm-nomod.path
