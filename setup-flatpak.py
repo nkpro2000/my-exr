@@ -88,6 +88,16 @@ os.makedirs(LINEXROOT_FAKPKG+'fak/')
 os.system('unzstd flatpak.pkg.tar.zst')
 os.system('tar -xvf flatpak.pkg.tar -C ./fak')
 
+print('I> To compile flatpak-chown_noroot for flatpak-system-helper')
+shutil.copyfile(
+    LINEXROOT_FAKNRO+'if_need_root/flatpak-chown_noroot.c',
+    LINEXROOT_FAKPKG+'flatpak-chown_noroot.c'
+)
+print('|> gcc flatpak-chown_noroot.c')
+if (ec:=os.system('gcc -o flatpak-chown_noroot flatpak-chown_noroot.c')) != 0:
+    os.chdir(pwd)
+    sys.exit(ec)
+
 os.chdir(pwd)
 
 
@@ -125,6 +135,10 @@ sed -f "$FAKN"org.freedesktop.Flatpak.SystemHelper.conf.sed \
 
 sed -f "$FAKN"org.freedesktop.Flatpak.policy.sed \
     -i /usr/share/polkit-1/actions/org.freedesktop.Flatpak.policy
+
+cp ./flatpak-chown_noroot /usr/lib/
+chown root:fak /usr/lib/flatpak-chown_noroot
+chmod u=rws,g=x,o= /usr/lib/flatpak-chown_noroot
 
 cp "$FAKM"to_avoid_unmod-flatpak/flatpak-rm-nomod.service /usr/lib/systemd/system/
 cp "$FAKM"to_avoid_unmod-flatpak/flatpak-rm-nomod.path /usr/lib/systemd/system/
