@@ -9,6 +9,7 @@ import shutil
 LINEXROOT_FAKPKG = '/mnt/LinEx/Root/1Tux/'+os.environ['USER']+'/flatpak_pkg/'
 LINEXROOT_GIT = '/var/lxr/'+ os.environ['USER'] +'/LinExRoot_git/'
 LINEXROOT_FAKMOD = LINEXROOT_GIT+'flatpak/mymod/'
+LINEXROOT_FAKNRO = LINEXROOT_GIT+'flatpak/noroot/'
 LINEXROOT_BACKUP = LINEXROOT_GIT+'data/backup/'
 
 MAKEPKG_CMD = 'makepkg -Lfs'
@@ -54,6 +55,14 @@ if (ec:=os.system("git apply -3 "+ LINEXROOT_FAKMOD+"Apply-MyMod-for-Flatpak-sys
 # on flatpak_git/system-helper/flatpak-system-helper.c while `makepkg -Lfs`.
 os.system('cp '+ LINEXROOT_FAKMOD+'MyMod-of-Flatpak-system-helper-polkit_details_insert-installation.patch ./')
 
+print('|> appling patch Apply-NoRoot-for-Flatpak-system-helper-while-building.patch')
+if (ec:=os.system("git apply -3 "+ LINEXROOT_FAKNRO+"Apply-NoRoot-for-Flatpak-system-helper-while-building.patch")) != 0:
+    os.chdir(pwd)
+    sys.exit(ec)
+# This^ patch is used to modify PKGBUILD of arch flatpak pkg, to apply my modifications
+# on flatpak_git/system-helper/flatpak-system-helper.c while `makepkg -Lfs`.
+os.system('cp '+ LINEXROOT_FAKNRO+'Using-flatpak-chown_noroot-instead-of-unistd-chown-so-noroot.patch ./')
+
 print('|> making flatpak pkg (using archlinux PKGBUILD file)')
 ec=os.system(MAKEPKG_CMD)
 while ec!=0:
@@ -88,6 +97,7 @@ script = r'''# shellcheck shell=sh
 
 cd '''+ LINEXROOT_FAKPKG + r''' || (echo 'no LinExRoot_FlatpAKPKG' && exit)
 FAKM='''+ LINEXROOT_FAKMOD + r'''
+FAKN='''+ LINEXROOT_FAKNRO + r'''
 BKUP='''+ LINEXROOT_BACKUP + r'''
 THIS_USER='''+ os.environ['USER'] +r'''
 
@@ -104,6 +114,18 @@ cp ./fak/usr/lib/flatpak-system-helper /usr/lib/flatpak-system-helper_mymod
 
 cp "$FAKM"org.freedesktop.Flatpak.rules /etc/polkit-1/rules.d/
 
+cp /usr/share/dbus-1/system.d/org.freedesktop.Flatpak.SystemHelper.conf "$BKUP"
+cp /usr/share/polkit-1/actions/org.freedesktop.Flatpak.policy "$BKUP"
+
+sed -f "$FAKN"flatpak-system-helper.service.sed -i /usr/lib/systemd/system/flatpak-system-helper.service
+sed -f "$FAKN"org.freedesktop.Flatpak.SystemHelper.service.sed \
+    -i /usr/share/dbus-1/system-services/org.freedesktop.Flatpak.SystemHelper.service
+sed -f "$FAKN"org.freedesktop.Flatpak.SystemHelper.conf.sed \
+    -i /usr/share/dbus-1/system.d/org.freedesktop.Flatpak.SystemHelper.conf
+
+sed -f "$FAKN"org.freedesktop.Flatpak.policy.sed \
+    -i /usr/share/polkit-1/actions/org.freedesktop.Flatpak.policy
+
 cp "$FAKM"to_avoid_unmod-flatpak/flatpak-rm-nomod.service /usr/lib/systemd/system/
 cp "$FAKM"to_avoid_unmod-flatpak/flatpak-rm-nomod.path /usr/lib/systemd/system/
 systemctl daemon-reload
@@ -111,6 +133,10 @@ systemctl enable --now flatpak-rm-nomod.path
 
 groupadd lxr
 usermod --append --group lxr "$THIS_USER"
+
+useradd -MrUc 'Flatpak system-wide dirs' -d / -s /usr/bin/nologin fak
+chown -hR fak:fak /var/lib/flatpak/
+chown -hR fak:fak /mnt/LinEx/Root/*/flatpak/
 
 '''
 with open(LINEXROOT_FAKPKG+'update-flatpak.sh', 'w') as f:

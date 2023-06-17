@@ -1,0 +1,56 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: nkpro2000 <45198561+nkpro2000@users.noreply.github.com>
+Date: Sat, 17 Jun 2023 11:08:11 +0530
+Subject: [PATCH] Using flatpak-chown_noroot instead of unistd.chown
+
+This patch is used to modify flatpak-system-helper to use suid ed
+/usr/lib/flatpak-chown_noroot, so that chown without root privileged.
+This file is generated using `git format-patch --zero-commit -1 HEAD`.
+---
+ system-helper/flatpak-system-helper.c | 21 ++++++++++++++++++---
+ 1 file changed, 18 insertions(+), 3 deletions(-)
+
+diff --git a/system-helper/flatpak-system-helper.c b/system-helper/flatpak-system-helper.c
+index 13a7b3b2..f335f2f2 100644
+--- a/system-helper/flatpak-system-helper.c
++++ b/system-helper/flatpak-system-helper.c
+@@ -1674,6 +1674,20 @@ reuse_cache_dir_if_available (const gchar    *repo_tmp,
+   return res;
+ }
+ 
++int chown_noroot(const char *dir, unsigned int uid, unsigned int gid);
++int chown_noroot(const char *dir, unsigned int uid, unsigned int gid) {
++  int i;
++  char cmd[100];
++  // command string
++  i = snprintf(cmd, sizeof(cmd), "/usr/lib/flatpak-chown_noroot %u %u %s", uid, gid, dir);
++  if (i >= sizeof(cmd)) {
++    return -1; // to fail
++  }
++  // calling command
++  int ec = system(cmd);
++  return ec;
++}
++
+ static gboolean
+ handle_get_revokefs_fd (FlatpakSystemHelper   *object,
+                         GDBusMethodInvocation *invocation,
+@@ -1754,11 +1768,12 @@ handle_get_revokefs_fd (FlatpakSystemHelper   *object,
+       g_hash_table_insert (cache_dirs_in_use, g_strdup (src_dir), NULL);
+       G_UNLOCK (cache_dirs_in_use);
+ 
+-      if (chown (src_dir, passwd.pw_uid, passwd.pw_gid) == -1)
++      int chown_noroot_ec = chown_noroot (src_dir, passwd.pw_uid, passwd.pw_gid);
++      if (chown_noroot_ec != 0)
+         {
+           remove_dir_from_cache_dirs_in_use (src_dir);
+-          glnx_throw_errno_prefix (&error, "Failed to chown %s to user %s",
+-                                   src_dir, passwd.pw_name);
++          glnx_throw_errno_prefix (&error, "Failed to chown %s to user %s; exit_code:%d",
++                                   src_dir, passwd.pw_name, chown_noroot_ec);
+           g_dbus_method_invocation_return_gerror (invocation, error);
+           return G_DBUS_METHOD_INVOCATION_HANDLED;
+         }
+-- 
+2.40.1
+
