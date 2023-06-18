@@ -111,6 +111,29 @@ FAKN='''+ LINEXROOT_FAKNRO + r'''
 BKUP='''+ LINEXROOT_BACKUP + r'''
 THIS_USER='''+ os.environ['USER'] +r'''
 
+if tune2fs -l "$(mount | grep 'on / type' | cut -d\  -f1)" | grep 'Default mount options:' | grep 'acl'; then
+    if </proc/mounts grep ' / ' | grep 'noacl'; then
+        echo '?> ACL is enabled in default, but Overridden by /etc/fstab .'
+        # shellcheck disable=SC2016
+        echo 'I> Better run `sudo tune2fs -o acl /dev/sdXY`'
+        echo '   for enabling ACL in default mount options.'
+        exit
+    fi
+else
+    if </proc/mounts grep ' / ' | grep -v 'noacl' | grep 'acl'; then
+        echo '!> ACL is Enabled, but not in default mount options.'
+        # shellcheck disable=SC2016
+        echo 'I> Better run `sudo tune2fs -o acl /dev/sdXY`'
+        echo '   for enabling ACL in default mount options.'
+    else
+        echo '?> ACL is Disabled.'
+        # shellcheck disable=SC2016
+        echo 'I> Better run `sudo tune2fs -o acl /dev/sdXY`'
+        echo '   for enabling ACL in default mount options.'
+        exit
+    fi
+fi
+
 pacman -Sy flatpak
 
 cp /usr/lib/systemd/system/flatpak-system-helper.service "$BKUP"
