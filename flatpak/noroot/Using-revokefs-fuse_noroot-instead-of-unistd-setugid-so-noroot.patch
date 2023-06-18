@@ -1,0 +1,53 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: nkpro2000 <45198561+nkpro2000@users.noreply.github.com>
+Date: Sun, 18 Jun 2023 20:55:17 +0530
+Subject: [PATCH] Using revokefs-fuse_noroot instead of unistd.setu/gid
+
+This patch is used to modify flatpak-system-helper to use suid & sgid ed
+/usr/lib/revokefs-fuse_noroot, so setuid and setgid not needed from helper.
+This file is generated using `git format-patch --zero-commit -1 HEAD`.
+---
+ system-helper/flatpak-system-helper.c | 11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
+
+diff --git a/system-helper/flatpak-system-helper.c b/system-helper/flatpak-system-helper.c
+index 13a7b3b2..faa7fe3c 100644
+--- a/system-helper/flatpak-system-helper.c
++++ b/system-helper/flatpak-system-helper.c
+@@ -1497,6 +1497,7 @@ revokefs_fuse_backend_child_setup (gpointer user_data)
+    * before this by GSubprocess */
+   flatpak_close_fds_workaround (5);
+ 
++  /*
+   if (setgid (passwd->pw_gid) == -1)
+     {
+       g_warning ("Failed to setgid(%d) for revokefs backend: %s",
+@@ -1510,6 +1511,8 @@ revokefs_fuse_backend_child_setup (gpointer user_data)
+                  passwd->pw_uid, g_strerror (errno));
+       exit (1);
+     }
++
++  Instead use suid and sgid ed flatpak:flatpak /usr/lib/revokefs-fuse_noroot . */
+ }
+ 
+ static void
+@@ -1593,9 +1596,15 @@ ongoing_pull_new (FlatpakSystemHelper   *object,
+   if (g_getenv ("FLATPAK_REVOKEFS_FUSE"))
+     revokefs_fuse_bin = g_getenv ("FLATPAK_REVOKEFS_FUSE");
+ 
++  char revokefs_fuse_bin_noroot[50];
++  snprintf(
++    revokefs_fuse_bin_noroot, sizeof(revokefs_fuse_bin_noroot),
++    "%s_noroot", revokefs_fuse_bin
++  );
++
+   pull->revokefs_backend = g_subprocess_launcher_spawn (launcher,
+                                                         error,
+-                                                        revokefs_fuse_bin,
++                                                        revokefs_fuse_bin_noroot,
+                                                         "--backend",
+                                                         "--socket=3",
+                                                         "--exit-with-fd=4",
+-- 
+2.40.1
+

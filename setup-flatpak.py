@@ -62,6 +62,7 @@ if (ec:=os.system("git apply -3 "+ LINEXROOT_FAKNRO+"Apply-NoRoot-for-Flatpak-sy
 # This^ patch is used to modify PKGBUILD of arch flatpak pkg, to apply my modifications
 # on flatpak_git/system-helper/flatpak-system-helper.c while `makepkg -Lfs`.
 os.system('cp '+ LINEXROOT_FAKNRO+'Using-flatpak-chown_noroot-instead-of-unistd-chown-so-noroot.patch ./')
+os.system('cp '+ LINEXROOT_FAKNRO+'Using-revokefs-fuse_noroot-instead-of-unistd-setugid-so-noroot.patch ./')
 
 print('|> making flatpak pkg (using archlinux PKGBUILD file)')
 ec=os.system(MAKEPKG_CMD)
@@ -162,6 +163,11 @@ sed -f "$FAKN"org.freedesktop.Flatpak.policy.sed \
 cp ./flatpak-chown_noroot /usr/lib/
 chown root:fak /usr/lib/flatpak-chown_noroot
 chmod u=rws,g=x,o= /usr/lib/flatpak-chown_noroot
+
+cp /usr/lib/revokefs-fuse /usr/lib/revokefs-fuse_noroot
+chown flatpak:flatpak /usr/lib/revokefs-fuse_noroot
+chmod u=rs,g=rs,o= /usr/lib/revokefs-fuse_noroot
+setfacl -m 'u:fak:rx' /usr/lib/revokefs-fuse_noroot
 
 cp "$FAKM"to_avoid_unmod-flatpak/flatpak-rm-nomod.service /usr/lib/systemd/system/
 cp "$FAKM"to_avoid_unmod-flatpak/flatpak-rm-nomod.path /usr/lib/systemd/system/
