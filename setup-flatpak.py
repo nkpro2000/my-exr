@@ -63,6 +63,7 @@ if (ec:=os.system("git apply -3 "+ LINEXROOT_FAKNRO+"Apply-NoRoot-for-Flatpak-sy
 # on flatpak_git/system-helper/flatpak-system-helper.c while `makepkg -Lfs`.
 os.system('cp '+ LINEXROOT_FAKNRO+'Using-flatpak-chown_noroot-instead-of-unistd-chown-so-noroot.patch ./')
 os.system('cp '+ LINEXROOT_FAKNRO+'Using-revokefs-fuse_noroot-instead-of-unistd-setugid-so-noroot.patch ./')
+os.system('cp '+ LINEXROOT_FAKNRO+'Providing-necessary-permissions-on-paths-so-no-need-root.patch ./')
 
 print('|> making flatpak pkg (using archlinux PKGBUILD file)')
 ec=os.system(MAKEPKG_CMD)
