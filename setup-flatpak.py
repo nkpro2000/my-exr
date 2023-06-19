@@ -160,14 +160,17 @@ sed -f "$FAKN"org.freedesktop.Flatpak.SystemHelper.conf.sed \
 sed -f "$FAKN"org.freedesktop.Flatpak.policy.sed \
     -i /usr/share/polkit-1/actions/org.freedesktop.Flatpak.policy
 
+rm /usr/lib/flatpak-chown_noroot
 cp ./flatpak-chown_noroot /usr/lib/
 chown root:fak /usr/lib/flatpak-chown_noroot
 chmod u=rws,g=x,o= /usr/lib/flatpak-chown_noroot
 
+rm /usr/lib/revokefs-fuse_noroot
 cp /usr/lib/revokefs-fuse /usr/lib/revokefs-fuse_noroot
 chown flatpak:flatpak /usr/lib/revokefs-fuse_noroot
 chmod u=rs,g=rs,o= /usr/lib/revokefs-fuse_noroot
 setfacl -m 'u:fak:rx' /usr/lib/revokefs-fuse_noroot
+# OR simply add fak to flatpak group and chmod g+x do the job.
 
 cp "$FAKM"to_avoid_unmod-flatpak/flatpak-rm-nomod.service /usr/lib/systemd/system/
 cp "$FAKM"to_avoid_unmod-flatpak/flatpak-rm-nomod.path /usr/lib/systemd/system/
