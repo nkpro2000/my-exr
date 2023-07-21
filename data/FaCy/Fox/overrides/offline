@@ -1,0 +1,9 @@
+[Context]
+shared=!ipc;!network
+sockets=!cups;!pcsc;!pulseaudio;!x11
+devices=!all
+features=!devel
+filesystems=!xdg-download;/mnt/LinEx/Root/1Tux/nkpro/FaCyFox/.FireFox/offline/Downloads/;/mnt/LinEx/Root/1Tux/nkpro/FaCyFox/.FireFox/offline/.mozilla/firefox/facyfox_profile/
+
+[System Bus Policy]
+org.freedesktop.NetworkManager=none

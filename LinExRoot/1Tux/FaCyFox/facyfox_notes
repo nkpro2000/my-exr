@@ -1,0 +1,102 @@
+120M	/mnt/LinEx/Root/1Tux/nkpro/FaCyFox/.CryFs/default
+1.8G	/mnt/LinEx/Root/1Tux/nkpro/FaCyFox/.CryFs/fb
+2.5G	/mnt/LinEx/Root/1Tux/nkpro/FaCyFox/.CryFs/gacc
+1.2G	/mnt/LinEx/Root/1Tux/nkpro/FaCyFox/.CryFs/ig
+101M	/mnt/LinEx/Root/1Tux/nkpro/FaCyFox/.CryFs/test
+5.7G	total
+
+~ >>> du -sh /mnt/LinEx/Root/1Tux/nkpro/FaCyFox/.FireFox/gacc/.mozilla/firefox/facyfox_profile/
+197M    /mnt/LinEx/Root/1Tux/nkpro/FaCyFox/.FireFox/gacc/.mozilla/firefox/facyfox_profile/
+~ >>> cp -r /mnt/LinEx/Root/1Tux/nkpro/FaCyFox/.FireFox/gacc/.mozilla/firefox/facyfox_profile/ /mnt/LinEx/Root/7Temps/nkpro 
+~ >>> du -sh /mnt/LinEx/Root/7Temps/nkpro/facyfox_profile                       
+205M    /mnt/LinEx/Root/7Temps/nkpro/facyfox_profile
+~ >>> du -sh /mnt/LinEx/Root/7Temps/nkpro/facyfox_profile                       
+205M    /mnt/LinEx/Root/7Temps/nkpro/facyfox_profile
+~ >>>
+
+~ >>> qalc                                                                                                                                                            
+> 20+512+17
+  20 + 512 + 17 = 549
+> 3697+584
+  3697 + 584 = 4281
+> 4281+549
+  4281 + 549 = 4830
+
+> 584+3697
+  584 + 3697 = 4281
+> 584+3028
+  584 + 3028 = 3612
+> 584+415
+  584 + 415 = 999
+> 584+70
+  584 + 70 = 654
+
+~ >>> du -sh ~/.mozilla/firefox                                                                                                                                       
+490M    /home/nkpro/.mozilla/firefox
+~ >>>
+
+~ >>> cp -r /mnt/LinEx/Root/7Temps/nkpro/facyfox_profile/  /mnt/LinEx/Root/1Tux/nkpro/FaCyFox/.FireFox/gacctt/.mozilla/firefox/                                       
+~ >>> du -sh /mnt/LinEx/Root/1Tux/nkpro/FaCyFox/.CryFs/gacct                                                                                                          
+269M    /mnt/LinEx/Root/1Tux/nkpro/FaCyFox/.CryFs/gacct
+~ >>> du -sh /mnt/LinEx/Root/1Tux/nkpro/FaCyFox/.CryFs/gacctt                                                                                                         
+270M    /mnt/LinEx/Root/1Tux/nkpro/FaCyFox/.CryFs/gacctt
+~ >>> tree -puag /mnt/LinEx/Root/1Tux/nkpro/FaCyFox/.CryFs/gacctt | tail -n1                                                                                          
+4027 directories, 16231 files
+~ >>> tree -puag /mnt/LinEx/Root/1Tux/nkpro/FaCyFox/.CryFs/gacct | tail -n1                                                                                           
+4097 directories, 32302 files
+~ >>>                                                                                                                                                                 
+~ >>> tree -puag /mnt/LinEx/Root/1Tux/nkpro/FaCyFox/.FireFox/gacct/.mozilla/firefox/facyfox_profile | tail -n1                                                        
+307 directories, 4533 files
+~ >>> tree -puag /mnt/LinEx/Root/1Tux/nkpro/FaCyFox/.FireFox/gacctt/.mozilla/firefox/facyfox_profile | tail -n1                                                       
+307 directories, 4533 files
+~ >>> du -sh /mnt/LinEx/Root/1Tux/nkpro/FaCyFox/.FireFox/gacctt/.mozilla/firefox/facyfox_profile                                                                      
+197M    /mnt/LinEx/Root/1Tux/nkpro/FaCyFox/.FireFox/gacctt/.mozilla/firefox/facyfox_profile
+~ >>> du -sh /mnt/LinEx/Root/1Tux/nkpro/FaCyFox/.FireFox/gacct/.mozilla/firefox/facyfox_profile                                                                       
+197M    /mnt/LinEx/Root/1Tux/nkpro/FaCyFox/.FireFox/gacct/.mozilla/firefox/facyfox_profile
+~ >>>
+
+~ >>> cp -r ~/.mozilla/firefox/cph6njzv.default-release/ /mnt/LinEx/Root/1Tux/nkpro/FaCyFox/.FireFox/gacct/.mozilla/firefox/facyfox_profile                           
+~ >>> cp -r ~/.mozilla/firefox/cph6njzv.default-release/ /mnt/LinEx/Root/1Tux/nkpro/FaCyFox/.FireFox/gacctt/.mozilla/firefox/facyfox_profile                          
+~ >>>                                                                                                                                                                 
+~ >>> tree -puag ~/.mozilla/firefox/cph6njzv.default-release | tail -n1                                                                                               
+3718 directories, 5997 files
+~ >>> tree -puag /mnt/LinEx/Root/1Tux/nkpro/FaCyFox/.FireFox/gacctt/.mozilla/firefox/cph6njzv.default-release | tail -n1                                              
+0 directories, 0 files
+~ >>> tree -puag /mnt/LinEx/Root/1Tux/nkpro/FaCyFox/.FireFox/gacctt/.mozilla/firefox/facyfox_profile/cph6njzv.default-release | tail -n1                              
+3718 directories, 5997 files
+~ >>> tree -puag /mnt/LinEx/Root/1Tux/nkpro/FaCyFox/.FireFox/gacct/.mozilla/firefox/facyfox_profile/cph6njzv.default-release | tail -n1                               
+3718 directories, 5997 files
+~ >>>                                                                                                                                                                 
+~ >>> du -sh /mnt/LinEx/Root/1Tux/nkpro/FaCyFox/.FireFox/gacct/.mozilla/firefox/facyfox_profile                                                                       
+464M    /mnt/LinEx/Root/1Tux/nkpro/FaCyFox/.FireFox/gacct/.mozilla/firefox/facyfox_profile
+~ >>> du -sh /mnt/LinEx/Root/1Tux/nkpro/FaCyFox/.FireFox/gacctt/.mozilla/firefox/facyfox_profile                                                                      
+464M    /mnt/LinEx/Root/1Tux/nkpro/FaCyFox/.FireFox/gacctt/.mozilla/firefox/facyfox_profile
+~ >>>                                                                                                                                                                 
+~ >>> du -sh /mnt/LinEx/Root/1Tux/nkpro/FaCyFox/.CryFs/gacctt                                                                                                         
+624M    /mnt/LinEx/Root/1Tux/nkpro/FaCyFox/.CryFs/gacctt
+~ >>> du -sh /mnt/LinEx/Root/1Tux/nkpro/FaCyFox/.CryFs/gacct                                                                                                          
+549M    /mnt/LinEx/Root/1Tux/nkpro/FaCyFox/.CryFs/gacct
+~ >>>                                                                                                                                                                 
+~ >>> tree -puag /mnt/LinEx/Root/1Tux/nkpro/FaCyFox/.CryFs/gacct | tail -n1                                                                                           
+4097 directories, 68131 files
+~ >>> tree -puag /mnt/LinEx/Root/1Tux/nkpro/FaCyFox/.CryFs/gacctt | tail -n1                                                                                          
+4097 directories, 38893 files
+~ >>>
+
+~ >>> df -i                                                                                                                                                           
+Filesystem                                              Inodes IUsed IFree IUse% Mounted on
+dev                                                       470K   532  469K    1% /dev
+run                                                       472K   866  471K    1% /run
+/dev/sda6                                                 3.2M  882K  2.3M   28% /
+tmpfs                                                     472K     1  472K    1% /dev/shm
+tmpfs                                                     1.0M    33  1.0M    1% /tmp
+/dev/sda5                                                    0     0     0     - /boot/efi
+tmpfs                                                      95K   110   95K    1% /run/user/1000
+/dev/sda7                                                  13M  714K   12M    6% /mnt/LinEx
+cryfs@/mnt/LinEx/Root/1Tux/nkpro/FaCyFox/.CryFs/gacct/    818K   67K  752K    9% /mnt/LinEx/Root/1Tux/nkpro/FaCyFox/.FireFox/gacct/.mozilla/firefox/facyfox_profile
+cryfs@/mnt/LinEx/Root/1Tux/nkpro/FaCyFox/.CryFs/gacctt/   412K   38K  374K   10% /mnt/LinEx/Root/1Tux/nkpro/FaCyFox/.FireFox/gacctt/.mozilla/firefox/facyfox_profile
+~ >>>
+
+/mnt/LinEx/Root/1Tux/nkpro/FaCyFox/.FireFox/default/.local/share/flatpak/overrides/org.mozilla.firefox
+
+/mnt/LinEx/Root/1Tux/nkpro/FaCyFox/.FireFox/offline/.local/share/flatpak/overrides/org.mozilla.firefox

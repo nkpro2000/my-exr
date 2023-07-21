@@ -1,0 +1,122 @@
+#### Changes Done ####
+--- /mnt/LinEx/Root/1Tux/nkpro/FaCyApp/facyapp	2023-07-19 13:45:14.633801648 +0530
++++ /var/lxr/nkpro/LinExRoot_git/LinExRoot/1Tux/FaCyApp/facyapp	2023-07-19 13:45:45.120485200 +0530
+@@ -48,6 +48,8 @@
+     exit 1
+ fi
+ 
++ln -sfT "/mnt/LinEx/Root/1Tux/${USER}/FaCyApp/.HOMEs/" "/mnt/LinEx/Root/1Tux/${USER}/.~" || exit 2
++
+ home_path="/mnt/LinEx/Root/1Tux/${USER}/.~/$home/"
+ if test ! -d "$home_path"; then
+     echo "|> Home folder not found : $home_path"
+--- /mnt/LinEx/Root/1Tux/nkpro/FaCyApp/facyapp	2023-07-19 13:59:42.864983213 +0530
++++ /var/lxr/nkpro/LinExRoot_git/LinExRoot/1Tux/FaCyApp/facyapp	2023-07-19 14:02:37.136169726 +0530
+@@ -51,6 +51,7 @@
+     exit 1
+ fi
+ 
++mkdir -p "/mnt/LinEx/Root/1Tux/${USER}/FaCyApp/.HOMEs/"
+ ln -sfT "/mnt/LinEx/Root/1Tux/${USER}/FaCyApp/.HOMEs/" "/mnt/LinEx/Root/1Tux/${USER}/.~" || exit 2
+ 
+ home_path="/mnt/LinEx/Root/1Tux/${USER}/.~/$home/"
+--- /mnt/LinEx/Root/1Tux/nkpro/FaCyApp/facyapp	2023-07-19 15:18:14.948441989 +0530
++++ /var/lxr/nkpro/LinExRoot_git/LinExRoot/1Tux/FaCyApp/facyapp	2023-07-19 21:25:45.303564970 +0530
+@@ -22,6 +22,8 @@
+  app     For creating CryFs folder and Flatpak app selection
+             app: --help | -h    show this help message and exit
+             app: --update | -u  just copy to executable facyapp
++            app: --list | -l    list all the facyapp s
++            app: -L             " & override files too.
+             app: --seal | -s    use to override for that home
+ 
+  home    For creating home folder for flatpak apps
+@@ -44,6 +46,19 @@
+         "/var/lxr/${USER}/LinExRoot_git/LinExRoot/1Tux/FaCyApp/facyapp" \
+         "/mnt/LinEx/Root/1Tux/${USER}/FaCyApp/facyapp"
+     exit
++elif test "$app" = '--list' -o "$app" = '-l' -o "$app" = '-L'; then
++    tree "/mnt/LinEx/Root/1Tux/${USER}/FaCyApp/.init/"| head -n-1| tail -n+2| sed 's/.sh$//'
++    if test "$app" = '-L'; then
++        for i in "/mnt/LinEx/Root/1Tux/${USER}/FaCyApp/.HOMEs/"*; do
++            for j in "$i/.local/share/flatpak/overrides/"*; do
++                if test "$(basename "$j")" != 'com.github.tchx84.Flatseal'; then
++                    bat --paging=never --language=toml "$j" \
++                        --file-name="FaCyApp: $(basename "$i") - $(basename "$j")  (flatpak overrides)"
++                fi
++            done
++        done
++    fi
++    exit
+ elif test "$app" = '--seal' -o "$app" = '-s'; then
+     todo='flatseal'
+ elif test "$app" != "${app#-}" ; then
+--- /mnt/LinEx/Root/1Tux/nkpro/FaCyApp/facyapp	2023-07-19 21:33:41.134033517 +0530
++++ /var/lxr/nkpro/LinExRoot_git/LinExRoot/1Tux/FaCyApp/facyapp	2023-07-19 22:04:01.117945312 +0530
+@@ -47,8 +47,9 @@
+         "/mnt/LinEx/Root/1Tux/${USER}/FaCyApp/facyapp"
+     exit
+ elif test "$app" = '--list' -o "$app" = '-l' -o "$app" = '-L'; then
+-    tree "/mnt/LinEx/Root/1Tux/${USER}/FaCyApp/.init/"| head -n-1| tail -n+2| sed 's/.sh$//'
++    tree "/mnt/LinEx/Root/1Tux/${USER}/FaCyApp/.init/"| head -n-2| tail -n+2| sed 's/.sh$//'
+     if test "$app" = '-L'; then
++        echo
+         for i in "/mnt/LinEx/Root/1Tux/${USER}/FaCyApp/.HOMEs/"*; do
+             for j in "$i/.local/share/flatpak/overrides/"*; do
+                 if test "$(basename "$j")" != 'com.github.tchx84.Flatseal'; then
+--- /mnt/LinEx/Root/1Tux/nkpro/FaCyApp/facyapp	2023-07-19 23:53:01.686834023 +0530
++++ /var/lxr/nkpro/LinExRoot_git/LinExRoot/1Tux/FaCyApp/facyapp	2023-07-21 18:03:16.777444441 +0530
+@@ -24,6 +24,8 @@
+             app: --update | -u  just copy to executable facyapp
+             app: --list | -l    list all the facyapp s
+             app: -L             " & override files too.
++            app: --push | -p    copy init and override files to
++                                LinExRoot_git for pushing to repo.
+             app: --seal | -s    use to override for that home
+ 
+  home    For creating home folder for flatpak apps
+@@ -60,6 +62,33 @@
+         done
+     fi
+     exit
++elif test "$app" = '--push' -o "$app" = '-p'; then
++    find "/mnt/LinEx/Root/1Tux/${USER}/FaCyApp/.init/" -type f -exec bash -c '
++        file="$(echo "$1" | sed s~/mnt/LinEx/Root/1Tux/${USER}/FaCyApp/.init/~~g)"
++            mkdir -p "/var/lxr/${USER}/LinExRoot_git/data/FaCy/diffs/App-inits/$(dirname "$file")"
++            diff -u "/var/lxr/${USER}/LinExRoot_git/data/FaCy/App/inits/$file" \
++                "/mnt/LinEx/Root/1Tux/${USER}/FaCyApp/.init/$file" \
++                >> "/var/lxr/${USER}/LinExRoot_git/data/FaCy/diffs/App-inits/${file%.sh}.diff"
++        ' shell "{}" \;
++    cp -r "/mnt/LinEx/Root/1Tux/${USER}/FaCyApp/.init/"* \
++        "/var/lxr/${USER}/LinExRoot_git/data/FaCy/App/inits/"
++    find "/mnt/LinEx/Root/1Tux/${USER}/FaCyApp/.HOMEs/" \
++        -regex "/mnt/LinEx/Root/1Tux/${USER}/FaCyApp/\.HOMEs/[^/]+/\.local/share/flatpak/overrides/[^/]+" \
++        -type f -exec bash -c '
++            file="$(echo "$1" | sed s~/mnt/LinEx/Root/1Tux/${USER}/FaCyApp/.HOMEs/~~g)"
++            folder="$(echo "$file" | cut -d/ -f1)"
++            file="$(basename "$file")"
++            if test "$file" != "com.github.tchx84.Flatseal"; then
++                mkdir -p "/var/lxr/${USER}/LinExRoot_git/data/FaCy/diffs/App-overrides/$folder"
++                diff -u "/var/lxr/${USER}/LinExRoot_git/data/FaCy/App/overrides/$folder/$file" \
++                    "/mnt/LinEx/Root/1Tux/${USER}/FaCyApp/.HOMEs/$folder/.local/share/flatpak/overrides/$file" \
++                    >> "/var/lxr/${USER}/LinExRoot_git/data/FaCy/diffs/App-overrides/$folder/${file%.sh}.diff"
++                mkdir -p "/var/lxr/${USER}/LinExRoot_git/data/FaCy/App/overrides/$folder"
++                cp "/mnt/LinEx/Root/1Tux/${USER}/FaCyApp/.HOMEs/$folder/.local/share/flatpak/overrides/$file" \
++                    "/var/lxr/${USER}/LinExRoot_git/data/FaCy/App/overrides/$folder/$file"
++            fi
++            ' shell "{}" \;
++    exit
+ elif test "$app" = '--seal' -o "$app" = '-s'; then
+     todo='flatseal'
+ elif test "$app" != "${app#-}" ; then
+--- /mnt/LinEx/Root/1Tux/nkpro/FaCyApp/facyapp	2023-07-21 18:03:55.354156592 +0530
++++ /var/lxr/nkpro/LinExRoot_git/LinExRoot/1Tux/FaCyApp/facyapp	2023-07-21 18:15:50.564959799 +0530
+@@ -43,7 +43,7 @@
+     diff -u \
+         "/mnt/LinEx/Root/1Tux/${USER}/FaCyApp/facyapp" \
+         "/var/lxr/${USER}/LinExRoot_git/LinExRoot/1Tux/FaCyApp/facyapp" \
+-        >> "/var/lxr/${USER}/LinExRoot_git/LinExRoot/1Tux/FaCyApp/facyapp_notes"
++        >> "/var/lxr/${USER}/LinExRoot_git/data/FaCy/diffs/facyapp.diff"
+     cp \
+         "/var/lxr/${USER}/LinExRoot_git/LinExRoot/1Tux/FaCyApp/facyapp" \
+         "/mnt/LinEx/Root/1Tux/${USER}/FaCyApp/facyapp"

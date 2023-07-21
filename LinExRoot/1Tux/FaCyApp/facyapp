@@ -1,0 +1,202 @@
+#!/bin/sh
+
+# FlAtpak CrYfs APP
+
+if test -n "$1"; then
+    app="$1"
+    shift
+else app="--help"; fi
+
+if test -n "$1"; then
+    home="$1"
+    shift
+else home='_'; fi
+
+if test "$app" = '--help' -o "$app" = '-h'; then
+cat << EOL
+usage: facyapp app [home] [option ...]
+
+    FlAtpak CrYfs APP
+
+positional arguments:
+ app     For creating CryFs folder and Flatpak app selection
+            app: --help | -h    show this help message and exit
+            app: --update | -u  just copy to executable facyapp
+            app: --list | -l    list all the facyapp s
+            app: -L             " & override files too.
+            app: --push | -p    copy init and override files to
+                                LinExRoot_git for pushing to repo.
+            app: --seal | -s    use to override for that home
+
+ home    For creating home folder for flatpak apps
+            (default: _)
+
+ option  Will be pass to \`flatpak run app.id \`
+
+see script for more details /mnt/LinEx/Root/1Tux/\${USER}/FaCyApp/facyapp
+EOL
+exit
+elif test "$app" = '--update' -o "$app" = '-u'; then
+    diff -u --color \
+        "/mnt/LinEx/Root/1Tux/${USER}/FaCyApp/facyapp" \
+        "/var/lxr/${USER}/LinExRoot_git/LinExRoot/1Tux/FaCyApp/facyapp"
+    diff -u \
+        "/mnt/LinEx/Root/1Tux/${USER}/FaCyApp/facyapp" \
+        "/var/lxr/${USER}/LinExRoot_git/LinExRoot/1Tux/FaCyApp/facyapp" \
+        >> "/var/lxr/${USER}/LinExRoot_git/data/FaCy/diffs/facyapp.diff"
+    cp \
+        "/var/lxr/${USER}/LinExRoot_git/LinExRoot/1Tux/FaCyApp/facyapp" \
+        "/mnt/LinEx/Root/1Tux/${USER}/FaCyApp/facyapp"
+    exit
+elif test "$app" = '--list' -o "$app" = '-l' -o "$app" = '-L'; then
+    tree "/mnt/LinEx/Root/1Tux/${USER}/FaCyApp/.init/"| head -n-2| tail -n+2| sed 's/.sh$//'
+    if test "$app" = '-L'; then
+        echo
+        for i in "/mnt/LinEx/Root/1Tux/${USER}/FaCyApp/.HOMEs/"*; do
+            for j in "$i/.local/share/flatpak/overrides/"*; do
+                if test "$(basename "$j")" != 'com.github.tchx84.Flatseal'; then
+                    bat --paging=never --language=toml "$j" \
+                        --file-name="FaCyApp: $(basename "$i") - $(basename "$j")  (flatpak overrides)"
+                fi
+            done
+        done
+    fi
+    exit
+elif test "$app" = '--push' -o "$app" = '-p'; then
+    find "/mnt/LinEx/Root/1Tux/${USER}/FaCyApp/.init/" -type f -exec bash -c '
+        file="$(echo "$1" | sed s~/mnt/LinEx/Root/1Tux/${USER}/FaCyApp/.init/~~g)"
+            mkdir -p "/var/lxr/${USER}/LinExRoot_git/data/FaCy/diffs/App-inits/$(dirname "$file")"
+            diff -u "/var/lxr/${USER}/LinExRoot_git/data/FaCy/App/inits/$file" \
+                "/mnt/LinEx/Root/1Tux/${USER}/FaCyApp/.init/$file" \
+                >> "/var/lxr/${USER}/LinExRoot_git/data/FaCy/diffs/App-inits/${file%.sh}.diff"
+        ' shell "{}" \;
+    cp -r "/mnt/LinEx/Root/1Tux/${USER}/FaCyApp/.init/"* \
+        "/var/lxr/${USER}/LinExRoot_git/data/FaCy/App/inits/"
+    find "/mnt/LinEx/Root/1Tux/${USER}/FaCyApp/.HOMEs/" \
+        -regex "/mnt/LinEx/Root/1Tux/${USER}/FaCyApp/\.HOMEs/[^/]+/\.local/share/flatpak/overrides/[^/]+" \
+        -type f -exec bash -c '
+            file="$(echo "$1" | sed s~/mnt/LinEx/Root/1Tux/${USER}/FaCyApp/.HOMEs/~~g)"
+            folder="$(echo "$file" | cut -d/ -f1)"
+            file="$(basename "$file")"
+            if test "$file" != "com.github.tchx84.Flatseal"; then
+                mkdir -p "/var/lxr/${USER}/LinExRoot_git/data/FaCy/diffs/App-overrides/$folder"
+                diff -u "/var/lxr/${USER}/LinExRoot_git/data/FaCy/App/overrides/$folder/$file" \
+                    "/mnt/LinEx/Root/1Tux/${USER}/FaCyApp/.HOMEs/$folder/.local/share/flatpak/overrides/$file" \
+                    >> "/var/lxr/${USER}/LinExRoot_git/data/FaCy/diffs/App-overrides/$folder/${file%.sh}.diff"
+                mkdir -p "/var/lxr/${USER}/LinExRoot_git/data/FaCy/App/overrides/$folder"
+                cp "/mnt/LinEx/Root/1Tux/${USER}/FaCyApp/.HOMEs/$folder/.local/share/flatpak/overrides/$file" \
+                    "/var/lxr/${USER}/LinExRoot_git/data/FaCy/App/overrides/$folder/$file"
+            fi
+            ' shell "{}" \;
+    exit
+elif test "$app" = '--seal' -o "$app" = '-s'; then
+    todo='flatseal'
+elif test "$app" != "${app#-}" ; then
+    echo '?> argument unrecognized. (use --help for help)'
+    exit 1
+fi
+
+mkdir -p "/mnt/LinEx/Root/1Tux/${USER}/FaCyApp/.HOMEs/"
+ln -sfT "/mnt/LinEx/Root/1Tux/${USER}/FaCyApp/.HOMEs/" "/mnt/LinEx/Root/1Tux/${USER}/.~" || exit 2
+
+home_path="/mnt/LinEx/Root/1Tux/${USER}/.~/$home/"
+if test ! -d "$home_path"; then
+    echo "|> Home folder not found : $home_path"
+    echo "|>    creating..."
+    mkdir -p "$home_path"
+fi
+
+if test "$todo" = 'flatseal'; then
+    mkdir -p "$home_path.local/share/flatpak/overrides/"
+    cp \
+        "/mnt/LinEx/Root/1Tux/${USER}/.local/share/flatpak/overrides/com.github.tchx84.Flatseal" \
+                           "$home_path.local/share/flatpak/overrides/com.github.tchx84.Flatseal"
+    echo '$> sh>' \
+        HOME="$home_path" flatpak --installation=lxr run com.github.tchx84.Flatseal
+    HOME="$home_path" flatpak --installation=lxr run com.github.tchx84.Flatseal
+    exit
+fi
+
+cryfs_path="/mnt/LinEx/Root/1Tux/${USER}/FaCyApp/.CryFs/$home/$app/"
+if test ! -d "$cryfs_path"; then
+    echo "|> Basedir for CryFs not found : $cryfs_path"
+    echo "|>    creating..."
+    mkdir -p "$cryfs_path"
+    todo='show_settings'
+fi
+
+flatpak_run="/mnt/LinEx/Root/1Tux/${USER}/FaCyApp/.init/$home/$app.sh"
+if test ! -f "$flatpak_run"; then
+    echo "|> Flatpak run command script not found : $flatpak_run"
+    echo "|>    generating..."
+    mkdir -p "$(dirname "$flatpak_run")"
+
+    echo "<> Enter Application ID for Flatpak : >"
+    read -r app_id
+
+    app_dir="$home_path.var/app/$app_id/"
+    if test ! -d "$app_dir"; then
+        echo "|> Flatpak app dir in .var/app/ not found : $app_dir"
+        echo "|>    creating..."
+        mkdir -p "$app_dir"
+        mkdir -p "$home_path.var/.cache/app/$app_id/cache/"
+    else
+        echo "?> Already have dir for this Application ID in $home_path.var/app/"
+        echo "I>   you can use either this app($app) or that already had"
+        echo "I>   at the same time, since same mount point while CryFs."
+        echo "<> Enter p:to proceed | *:to cancel and remove this app dirs >"
+        read -r cancel
+
+        if test "$cancel" != 'p'; then
+            echo "|> Cancelling this app, try with different home."
+            rmdir "$cryfs_path"
+            exit
+        fi
+    fi
+
+cat > "$flatpak_run" <<EOL
+# shellcheck shell=sh
+mount_cryfs () {
+    cryfs "$cryfs_path" "$app_dir" && \
+    ln -sfT "$home_path.var/.cache/app/$app_id/cache" "${app_dir}cache" && \
+    file "${app_dir}cache"
+}
+EOL
+
+    echo "<> Enter default options for $app_id >"
+    read -r default_options
+
+cat >> "$flatpak_run" <<EOL
+run_flatpak () {
+    XDG_DATA_DIRS="$home_path.local/share/flatpak/exports/share:/mnt/LinEx/Root/1Tux/flatpak/exports/share:$XDG_DATA_DIRS" \
+    HOME="$home_path" flatpak --installation=lxr run $app_id $default_options "\$@"
+}
+# Give permission to app for "$home_path.var/.cache/app/$app_id/cache/" , needed in some cases.
+EOL
+
+fi
+
+echo "|> Going to \`source\` this file and do \`mount_cryfs && run_flatpak \"\$@\"\`"
+bat --paging=never "$flatpak_run"
+
+# shellcheck disable=SC1090
+. "$flatpak_run" || exit $?
+
+if mount | grep "cryfs@$cryfs_path"; then
+    echo "|> already mounted app dir with CryFs"
+else
+    if test "$todo" = 'show_settings'; then
+        echo "I> Say NO to default settings?"
+        echo "I> Choose 16KB / 8KB for block size."
+        echo "I> Say YES to treat missing blocks as integrity violations?"
+    fi
+    mount_cryfs || exit $?
+fi
+
+echo; echo '$> ss> run_flatpak' "$@"
+run_flatpak "$@" || exit $?
+
+## To Setup
+# cp -r "/var/lxr/${USER}/LinExRoot_git/LinExRoot/1Tux/FaCyApp" "/mnt/LinEx/Root/1Tux/${USER}/"
+# chmod u+x "/mnt/LinEx/Root/1Tux/${USER}/FaCyApp/facyapp"
+# alias facyapp="/mnt/LinEx/Root/1Tux/${USER}/FaCyApp/facyapp"

@@ -1,0 +1,12 @@
+#!/bin/sh
+
+if test "$1" = "--help"; then echo 'I> bind mount TGdow from LXR'; exit; fi
+
+if mount | grep "${HOME}/Downloads/Telegram Desktop"; then
+    sudo umount "${HOME}/Downloads/Telegram Desktop" && echo Unmounted.
+else sudo mount --bind "/mnt/LinEx/Root/1Tux/${USER}/TGdow" "${HOME}/Downloads/Telegram Desktop/" && echo Mounted TGdow; fi
+sudo -K
+
+## To Setup
+# cp -r "/var/lxr/${USER}/LinExRoot_git/LinExRoot/1Tux/TGdow" "/mnt/LinEx/Root/1Tux/${USER}/"
+# chmod u+x "/mnt/LinEx/Root/1Tux/${USER}/TGdow/bindmount"

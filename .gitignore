@@ -8,6 +8,7 @@
 # /.assets/.others/ # Moved to ~/nk/.assets/.others/
 # Backups (not needed for repo)
 /data/backup/
+/data/FaCy/**
 
 ### My Coding Environment ###
 # DOLPHIN Directory metadata

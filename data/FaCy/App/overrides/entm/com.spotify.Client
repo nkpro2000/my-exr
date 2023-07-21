@@ -1,0 +1,2 @@
+[Context]
+filesystems=!xdg-pictures;!xdg-music;/mnt/LinEx/Root/1Tux/nkpro/FaCyApp/.HOMEs/entm/.spotify-cache;/mnt/LinEx/Root/1Tux/nkpro/FaCyApp/.HOMEs/entm/.spotify-adblock/spotify-adblock.so;/mnt/LinEx/Root/1Tux/nkpro/FaCyApp/.HOMEs/entm/.config/spotify-adblock/config.toml;/mnt/LinEx/Root/1Tux/nkpro/.~/entm/.var/.cache/app/com.spotify.Client/cache;

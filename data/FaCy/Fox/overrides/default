@@ -1,0 +1,6 @@
+[Context]
+shared=!ipc
+sockets=!cups;!pcsc;!pulseaudio;!x11
+devices=!all
+features=!devel
+filesystems=!xdg-download;/mnt/LinEx/Root/1Tux/nkpro/FaCyFox/.FireFox/default/Downloads/;/mnt/LinEx/Root/1Tux/nkpro/FaCyFox/.FireFox/default/.mozilla/firefox/facyfox_profile/

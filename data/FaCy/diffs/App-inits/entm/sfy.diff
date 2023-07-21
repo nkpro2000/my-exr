@@ -1,0 +1,24 @@
+--- /var/lxr/nkpro/LinExRoot_git/data/FaCy/App/inits/entm/sfy.sh	2023-07-21 18:25:54.807401239 +0530
++++ /mnt/LinEx/Root/1Tux/nkpro/FaCyApp/.init/entm/sfy.sh	2023-07-21 18:53:05.890350370 +0530
+@@ -7,21 +7,9 @@
+     read -r ad
+     if test "$ad" = "b"; then
+         echo "I> Blocking AD using https://github.com/abba23/spotify-adblock"
+-        # cd /mnt/LinEx/Root/1Tux/nkpro/FaCyApp/.HOMEs/entm
+-        # git clone https://github.com/abba23/spotify-adblock.git
+-        # sudo pacman -S rust
+-        # cd spotify-adblock && make && cd ..
+-        # mkdir .spotify-adblock && mkdir -p .config/spotify-adblock
+-        # cp spotify-adblock/target/release/libspotifyadblock.so .spotify-adblock/spotify-adblock.so
+-        # cp spotify-adblock/config.toml .config/spotify-adblock/
+-        # file .spotify-adblock/spotify-adblock.so
+-        # HOME="/mnt/LinEx/Root/1Tux/nkpro/.~/entm/" flatpak --user \
+-        #  override --filesystem="$(pwd)/.spotify-adblock/spotify-adblock.so" \
+-        #  --filesystem="$(pwd)/.config/spotify-adblock/config.toml" com.spotify.Client
+         cmd='eval "$(cat /app/bin/spotify |'
+         cmd="$cmd"' sed s~LD_PRELOAD=~LD_PRELOAD=/mnt/LinEx/Root/1Tux/nkpro/FaCyApp/.HOMEs/entm/.spotify-adblock/spotify-adblock.so:~g |'
+         cmd="$cmd"' sed s/'"'"'"$@" \+&'"'"'/'"'"'& sfy_pid=$!'"'"'/g)$(printf "\nwait \$sfy_pid")"'
+-        quote () { printf %s\\n "$1" | sed "s/'/'\\\\''/g;1s/^/'/;\$s/\$/'/" ; } # https://unix.stackexchange.com/a/445477 ## NotNeeded
+         XDG_DATA_DIRS="/mnt/LinEx/Root/1Tux/nkpro/.~/entm/.local/share/flatpak/exports/share:/mnt/LinEx/Root/1Tux/flatpak/exports/share:/home/nkpro/.local/share/flatpak/exports/share:/var/lib/flatpak/exports/share:/usr/local/share/:/usr/share/" \
+             HOME="/mnt/LinEx/Root/1Tux/nkpro/.~/entm/" flatpak --installation=lxr \
+             --command=sh run com.spotify.Client -c "$cmd" /app/bin/spotify_mymod \

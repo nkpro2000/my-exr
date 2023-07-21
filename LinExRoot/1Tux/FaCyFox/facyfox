@@ -1,0 +1,140 @@
+#!/bin/sh
+
+# FlAtpak CrYfs fireFOX
+
+if test -n "$1"; then
+    name="$1"
+    shift
+else name='default'; fi
+
+if test "$name" = '--help' -o "$name" = '-h'; then
+cat << EOL
+usage: facyfox [name] [option ...]
+
+    FlAtpak CrYfs fireFOX
+
+positional arguments:
+ name           For creating CryFs & Profiles (default: default)
+                    name: --help | -h    show this help message and exit
+                    name: --update | -u  just copy to executable facyfox
+                    name: --list | -l    list all the facyfox s
+                    name: -L             " & override files too.
+                    name: --push | -p    copy override files to LinExRoot_git
+                                         which can be pushed to repo.
+                    name: --seal | -s    use to override for that home,
+                                         required name as 2nd argument.
+
+ option         Will be pass to firefox
+
+see script for more details /mnt/LinEx/Root/1Tux/\${USER}/FaCyFox/facyfox
+EOL
+exit
+elif test "$name" = '--update' -o "$name" = '-u'; then
+    diff -u --color \
+        "/mnt/LinEx/Root/1Tux/${USER}/FaCyFox/facyfox" \
+        "/var/lxr/${USER}/LinExRoot_git/LinExRoot/1Tux/FaCyFox/facyfox"
+    diff -u \
+        "/mnt/LinEx/Root/1Tux/${USER}/FaCyFox/facyfox" \
+        "/var/lxr/${USER}/LinExRoot_git/LinExRoot/1Tux/FaCyFox/facyfox" \
+        >> "/var/lxr/${USER}/LinExRoot_git/data/FaCy/diffs/facyfox.diff"
+    cp \
+        "/var/lxr/${USER}/LinExRoot_git/LinExRoot/1Tux/FaCyFox/facyfox" \
+        "/mnt/LinEx/Root/1Tux/${USER}/FaCyFox/facyfox"
+    exit
+elif test "$name" = '--list' -o "$name" = '-l' -o "$name" = '-L'; then
+    ls -uA "/mnt/LinEx/Root/1Tux/${USER}/FaCyFox/.FireFox/"
+    if test "$name" = '-L'; then
+        echo
+        bat --paging=never --language=toml \
+            "/mnt/LinEx/Root/1Tux/${USER}/FaCyFox/.FireFox/"*"/.local/share/flatpak/overrides/org.mozilla.firefox"
+    fi
+    exit
+elif test "$name" = '--push' -o "$name" = '-p'; then
+    for folder in "/mnt/LinEx/Root/1Tux/${USER}/FaCyFox/.FireFox/"*; do
+        folder="$(basename "$folder")"
+        diff -u "/var/lxr/${USER}/LinExRoot_git/data/FaCy/Fox/overrides/$folder" \
+            "/mnt/LinEx/Root/1Tux/${USER}/FaCyFox/.FireFox/$folder/.local/share/flatpak/overrides/org.mozilla.firefox" \
+            >> "/var/lxr/${USER}/LinExRoot_git/data/FaCy/diffs/Fox-overrides/${folder}.diff"
+        cp "/mnt/LinEx/Root/1Tux/${USER}/FaCyFox/.FireFox/$folder/.local/share/flatpak/overrides/org.mozilla.firefox" \
+            "/var/lxr/${USER}/LinExRoot_git/data/FaCy/Fox/overrides/$folder"
+    done
+    exit
+elif test "$name" = '--seal' -o "$name" = '-s'; then
+    todo='flatseal'
+    if test -n "$1"; then
+        name="$1"
+        shift
+    else name='default'; fi
+elif test "$name" != "${name#-}" ; then
+    echo '?> argument unrecognized. (use --help for help)'
+    exit 1
+fi
+
+home_path="/mnt/LinEx/Root/1Tux/${USER}/FaCyFox/.FireFox/$name/"
+if test ! -d "$home_path"; then
+    echo "|> Home folder for FireFox not found : $home_path"
+    echo "|>    creating..."
+    mkdir -p "$home_path"
+fi
+
+if test "$todo" = 'flatseal'; then
+    mkdir -p "$home_path.local/share/flatpak/overrides/"
+    cp \
+        "/mnt/LinEx/Root/1Tux/${USER}/.local/share/flatpak/overrides/com.github.tchx84.Flatseal" \
+                           "$home_path.local/share/flatpak/overrides/com.github.tchx84.Flatseal"
+    echo '$> sh>' \
+        HOME="$home_path" flatpak --installation=lxr run com.github.tchx84.Flatseal
+    HOME="$home_path" flatpak --installation=lxr run com.github.tchx84.Flatseal
+    exit
+fi
+
+cryfs_path="/mnt/LinEx/Root/1Tux/${USER}/FaCyFox/.CryFs/$name/"
+if test ! -d "$cryfs_path"; then
+    echo "|> Basedir for CryFs not found : $cryfs_path"
+    echo "|>    creating..."
+    mkdir -p "$cryfs_path"
+    todo='show_settings'
+fi
+
+profile_path="$home_path.mozilla/firefox/facyfox_profile/"
+if test ! -d "$profile_path"; then
+    echo "|> Profile for FireFox not found : $profile_path"
+    echo "|>    creating..."
+    mkdir -p "$profile_path"
+fi
+
+override_file="$home_path.local/share/flatpak/overrides/org.mozilla.firefox"
+if test ! -f "$override_file"; then
+    echo "|> Flatpak override for FireFox not found : $override_file"
+    echo "|>    writing..."
+    mkdir -p "$(dirname "$override_file")"
+cat > "$override_file" <<EOL
+[Context]
+filesystems=!xdg-download;$profile_path;${home_path}Downloads/
+EOL
+fi
+
+if mount | grep "$home_path.mozilla/firefox/facyfox_profile"; then
+    echo "|> already mounted profile with CryFs"
+else
+    if test "$todo" = 'show_settings'; then
+        echo "I> Say NO to default settings?"
+        echo "I> Choose 16KB / 8KB for block size."
+        echo "I> Say YES to treat missing blocks as integrity violations?"
+    fi
+    cryfs "$cryfs_path" "$profile_path" ||exit $?
+fi
+
+echo '$> sh>' \
+    XDG_DATA_DIRS="$home_path.local/share/flatpak/exports/share:/mnt/LinEx/Root/1Tux/flatpak/exports/share:$XDG_DATA_DIRS" \
+    HOME="$home_path" flatpak --installation=lxr \
+    run org.mozilla.firefox --profile "$profile_path" --no-remote "$@"
+
+XDG_DATA_DIRS="$home_path.local/share/flatpak/exports/share:/mnt/LinEx/Root/1Tux/flatpak/exports/share:$XDG_DATA_DIRS" \
+    HOME="$home_path" flatpak --installation=lxr \
+    run org.mozilla.firefox --profile "$profile_path" --no-remote "$@"
+
+## To Setup
+# cp -r "/var/lxr/${USER}/LinExRoot_git/LinExRoot/1Tux/FaCyFox" "/mnt/LinEx/Root/1Tux/${USER}/"
+# chmod u+x "/mnt/LinEx/Root/1Tux/${USER}/FaCyFox/facyfox"
+# alias facyfox="/mnt/LinEx/Root/1Tux/${USER}/FaCyFox/facyfox"
