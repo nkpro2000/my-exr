@@ -79,7 +79,7 @@ for dir in enumerate('Tux,Wine,Darling,Droid,Boxes,Games,Temps'.split(',')):
         f.write(
             '[Context]\nfilesystems=!xdg-data/flatpak/app;!/var/lib/flatpak/app;'+\
                 #'/etc/flatpak/installations.d/:ro;'+\
-                'host-etc;'+ #github.com/flatpak/flatpak/issues/4525 \
+                'host-etc:ro;'+ #github.com/flatpak/flatpak/issues/4525 \
                 LINEXROOT+f'{dir[0]+1}{dir[1]}/flatpak/app:ro\n'
         )
 
