@@ -70,6 +70,17 @@ elif test "$name" != "${name#-}" ; then
     exit 1
 fi
 
+if test ! -d "/mnt/LinEx/Root/1Tux/${USER}/FaCyFox/.FireFox/$name/" -o \
+        ! -d "/mnt/LinEx/Root/1Tux/${USER}/FaCyFox/.CryFs/$name/" ; then
+    echo "I> FireFox Profile folder / CryFs folder  NOT FOUND"
+    echo "<> Enter c:to create | *:to abort >"
+    read -r abort
+    if test "$abort" != 'c'; then
+        echo "|> Aborting ..."
+        exit
+    fi
+fi
+
 home_path="/mnt/LinEx/Root/1Tux/${USER}/FaCyFox/.FireFox/$name/"
 if test ! -d "$home_path"; then
     echo "|> Home folder for FireFox not found : $home_path"

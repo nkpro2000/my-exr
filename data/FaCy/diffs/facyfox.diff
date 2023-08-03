@@ -106,3 +106,23 @@
      cp \
          "/var/lxr/${USER}/LinExRoot_git/LinExRoot/1Tux/FaCyFox/facyfox" \
          "/mnt/LinEx/Root/1Tux/${USER}/FaCyFox/facyfox"
+--- /mnt/LinEx/Root/1Tux/nkpro/FaCyFox/facyfox	2023-07-21 22:36:41.649725797 +0530
++++ /var/lxr/nkpro/LinExRoot_git/LinExRoot/1Tux/FaCyFox/facyfox	2023-08-03 21:30:30.360072948 +0530
+@@ -70,6 +70,17 @@
+     exit 1
+ fi
+ 
++if test ! -d "/mnt/LinEx/Root/1Tux/${USER}/FaCyFox/.FireFox/$name/" -o \
++        ! -d "/mnt/LinEx/Root/1Tux/${USER}/FaCyFox/.CryFs/$name/" ; then
++    echo "I> FireFox Profile folder / CryFs folder  NOT FOUND"
++    echo "<> Enter c:to create | *:to abort >"
++    read -r abort
++    if test "$abort" != 'c'; then
++        echo "|> Aborting ..."
++        exit
++    fi
++fi
++
+ home_path="/mnt/LinEx/Root/1Tux/${USER}/FaCyFox/.FireFox/$name/"
+ if test ! -d "$home_path"; then
+     echo "|> Home folder for FireFox not found : $home_path"

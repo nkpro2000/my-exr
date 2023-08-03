@@ -99,6 +99,18 @@ fi
 mkdir -p "/mnt/LinEx/Root/1Tux/${USER}/FaCyApp/.HOMEs/"
 ln -sfT "/mnt/LinEx/Root/1Tux/${USER}/FaCyApp/.HOMEs/" "/mnt/LinEx/Root/1Tux/${USER}/.~" || exit 2
 
+if test ! -d "/mnt/LinEx/Root/1Tux/${USER}/FaCyApp/.HOMEs/$home/" -o \
+        ! -d "/mnt/LinEx/Root/1Tux/${USER}/FaCyApp/.CryFs/$home/$app/" -o \
+        ! -f "/mnt/LinEx/Root/1Tux/${USER}/FaCyApp/.init/$home/$app.sh" ; then
+    echo "I> Home folder / CryFs folder / init script  NOT FOUND"
+    echo "<> Enter c:to create | *:to abort >"
+    read -r abort
+    if test "$abort" != 'c'; then
+        echo "|> Aborting ..."
+        exit
+    fi
+fi
+
 home_path="/mnt/LinEx/Root/1Tux/${USER}/.~/$home/"
 if test ! -d "$home_path"; then
     echo "|> Home folder not found : $home_path"

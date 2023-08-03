@@ -120,3 +120,24 @@
      cp \
          "/var/lxr/${USER}/LinExRoot_git/LinExRoot/1Tux/FaCyApp/facyapp" \
          "/mnt/LinEx/Root/1Tux/${USER}/FaCyApp/facyapp"
+--- /mnt/LinEx/Root/1Tux/nkpro/FaCyApp/facyapp	2023-07-21 22:36:45.986392935 +0530
++++ /var/lxr/nkpro/LinExRoot_git/LinExRoot/1Tux/FaCyApp/facyapp	2023-08-03 21:30:38.080623241 +0530
+@@ -99,6 +99,18 @@
+ mkdir -p "/mnt/LinEx/Root/1Tux/${USER}/FaCyApp/.HOMEs/"
+ ln -sfT "/mnt/LinEx/Root/1Tux/${USER}/FaCyApp/.HOMEs/" "/mnt/LinEx/Root/1Tux/${USER}/.~" || exit 2
+ 
++if test ! -d "/mnt/LinEx/Root/1Tux/${USER}/FaCyApp/.HOMEs/$home/" -o \
++        ! -d "/mnt/LinEx/Root/1Tux/${USER}/FaCyApp/.CryFs/$home/$app/" -o \
++        ! -f "/mnt/LinEx/Root/1Tux/${USER}/FaCyApp/.init/$home/$app.sh" ; then
++    echo "I> Home folder / CryFs folder / init script  NOT FOUND"
++    echo "<> Enter c:to create | *:to abort >"
++    read -r abort
++    if test "$abort" != 'c'; then
++        echo "|> Aborting ..."
++        exit
++    fi
++fi
++
+ home_path="/mnt/LinEx/Root/1Tux/${USER}/.~/$home/"
+ if test ! -d "$home_path"; then
+     echo "|> Home folder not found : $home_path"
